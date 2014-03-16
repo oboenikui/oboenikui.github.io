@@ -21,9 +21,15 @@ function onWindowLoad() {
     var img = document.createElement("img");
     img.setAttribute("src", IMG_PATH+imageName);
     img.setAttribute("alt", link.textContent);
+    img.setAttribute("width", "50");
+    img.setAttribute("height", "50");
     img.setAttribute("onmouseover", "mouseOverAction(this)");
     img.setAttribute("onmouseout", "mouseOutAction(this)");
     link.textContent="";
     link.appendChild(img);
   }
+}
+
+function drawRect(){
+  
 }
