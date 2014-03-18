@@ -1,9 +1,35 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Tani Falling Down</title>
     <script>
+        var unit_array = ["s", "m", "kg", "A", "K", "mol", "cd", "sr", "Hz", "N", "Pa", "J", "W", "C", "V", "F", "Ω", "S", "Wb", "T", "H", "℃", "lm", "lx", "Bq", "Gy", "Sv", "kat", "￥", "＄"];
+        var refresh_rate = 30;
+        var g = 9.8;
+        var font_name = "sans-serif";
+
+        var get_query = function () {
+            var result = {};
+            if (1 < window.location.search.length) {
+                var query = window.location.search.substring(1);
+                var parameters = query.split('&');
+                for (var i = 0; i < parameters.length; i++) {
+                    var element = parameters[i].split('=');
+                    var paramName = decodeURIComponent(element[0]);
+                    var paramValue = decodeURIComponent(element[1]);
+                    result[paramName] = paramValue;
+                }
+            }
+            return result;
+        }
+
+        var queries = get_query();
+
+        if (queries["units"] != undefined) {
+            unit_array = queries["units"].split(",");
+        }
         window.onresize = function () {
             var canvas = document.getElementById("can");
             if (!canvas || !canvas.getContext) return false;
@@ -11,56 +37,56 @@
             canvas.height = window.innerHeight;
             console.log("resize");
         }
+
+        var move_unit = function (pos) {
+            pos.y = pos.y + pos.v;
+            pos.v = pos.v + g / refresh_rate;
+        }
+
+        var move_all = function (positions) {
+            for (var i = 0; i < positions.length; i++) {
+                move_unit(positions[i]);
+                if (positions[i].y - window.innerWidth / 10 > window.innerHeight) {
+                    positions.splice(i, 1);
+                }
+            }
+        }
+
+        var add_unit = function (positions) {
+            var randnum = Math.floor(Math.random() * unit_array.length * 2);
+            if (randnum < unit_array.length) {
+                positions.push({ unit: randnum, x: Math.floor(Math.random() * window.innerWidth), y: 0, v: Math.floor(Math.random() * window.innerHeight / refresh_rate), size: Math.floor(Math.random() * window.innerWidth / 10) + 1 });
+            }
+        }
+
+        var draw_unit = function (context, pos) {
+            context.font = pos.size + "px " + font_name;
+            context.fillText(unit_array[pos.unit], pos.x, pos.y);
+        }
+
+        var draw_all = function (context, positions) {
+            context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            for (var i = 0; i < positions.length; i++) {
+                draw_unit(context, positions[i]);
+            }
+        }
+
         window.onload = function () {
             var canvas = document.getElementById("can");
             if (!canvas || !canvas.getContext) return false;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             var ctx = canvas.getContext("2d");
-            var font_name = ctx.font.substring(ctx.font.indexOf("px") + 3, ctx.font.length);
+            font_name = ctx.font.substring(ctx.font.indexOf("px") + 3, ctx.font.length);
             ctx.fillStyle = "#000";
-            var unit_array = ["s", "m", "kg", "A", "K", "mol", "cd", "sr", "Hz", "N", "Pa", "J", "W", "C", "V", "F", "Ω", "S", "Wb", "T", "H", "℃", "lm", "lx", "Bq", "Gy", "Sv", "kat", "￥", "＄"];
             var positions = [];
-            var refresh_rate = 30;
-            var g = 9.8;
-            var move_unit = function (pos) {
-                pos.y = pos.y + pos.v;
-                pos.v = pos.v + g / refresh_rate;
-            }
 
-            var move_all = function () {
-                for (var i = 0; i < positions.length; i++) {
-                    move_unit(positions[i]);
-                    if (positions[i].y - window.innerWidth / 10 > window.innerHeight) {
-                        positions.splice(i, 1);
-                    }
-                }
-            }
-
-            var add_unit = function () {
-                var randnum = Math.floor(Math.random() * unit_array.length * 2);
-                if (randnum < unit_array.length) {
-                    positions.push({ unit: randnum, x: Math.floor(Math.random() * window.innerWidth), y: 0, v: Math.floor(Math.random() * window.innerHeight / refresh_rate), size: Math.floor(Math.random() * window.innerWidth / 10) + 1 });
-                }
-            }
-
-            var draw_unit = function (context, pos) {
-                context.font = pos.size + "px " + font_name;
-                context.fillText(unit_array[pos.unit], pos.x, pos.y);
-            }
-
-            var draw_all = function () {
-                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-                for (var i = 0; i < positions.length; i++) {
-                    draw_unit(ctx, positions[i]);
-                }
-            }
             var timer;
             var delay = 1000 / refresh_rate;
             var loop = function () {
-                move_all();
-                add_unit();
-                draw_all();
+                move_all(positions);
+                add_unit(positions);
+                draw_all(ctx, positions);
                 clearTimeout(timer);
                 timer = setTimeout(loop, delay);
             }
@@ -90,7 +116,7 @@
 
 <body>
     <div id="wrapper">
-        <canvas id="can">HTML5非対応のブラウザです</canvas>
+        <canvas id="can">HTML5非対応のブラウザではご覧頂けません。</canvas>
     </div>
 </body>
 </html>
