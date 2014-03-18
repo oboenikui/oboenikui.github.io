@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -8,8 +7,8 @@
         var unit_array = ["s", "m", "kg", "A", "K", "mol", "cd", "sr", "Hz", "N", "Pa", "J", "W", "C", "V", "F", "Ω", "S", "Wb", "T", "H", "℃", "lm", "lx", "Bq", "Gy", "Sv", "kat", "￥", "＄"];
         var refresh_rate = 30;
         var g = 9.8;
-        var font_name = "sans-serif";
-
+        var font_name;
+        var probability = 0.5;
         var get_query = function () {
             var result = {};
             if (1 < window.location.search.length) {
@@ -35,7 +34,6 @@
             if (!canvas || !canvas.getContext) return false;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            console.log("resize");
         }
 
         var move_unit = function (pos) {
@@ -51,11 +49,17 @@
                 }
             }
         }
-
+        var max_size = window.innerWidth / 10;
         var add_unit = function (positions) {
-            var randnum = Math.floor(Math.random() * unit_array.length * 2);
+            var randnum = Math.floor(Math.random() * unit_array.length / probability);
             if (randnum < unit_array.length) {
-                positions.push({ unit: randnum, x: Math.floor(Math.random() * window.innerWidth), y: 0, v: Math.floor(Math.random() * window.innerHeight / refresh_rate), size: Math.floor(Math.random() * window.innerWidth / 10) + 1 });
+                positions.push({
+                    unit: randnum,
+                    x: Math.floor(Math.random() * (window.innerWidth + max_size) - max_size),
+                    y: 0,
+                    v: Math.floor(Math.random() * window.innerHeight / refresh_rate),
+                    size: Math.floor(Math.random() * max_size) + 1
+                });
             }
         }
 
@@ -77,10 +81,22 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             var ctx = canvas.getContext("2d");
-            font_name = ctx.font.substring(ctx.font.indexOf("px") + 3, ctx.font.length);
+            if (queries["font"] != undefined) {
+                font_name = queries["font"];
+            } else {
+                font_name = ctx.font.substring(ctx.font.indexOf("px") + 3, ctx.font.length);
+            }
             ctx.fillStyle = "#000";
             var positions = [];
-
+            if (queries["refresh_rate"] != undefined) {
+                refresh_rate = queries["refresh_rate"];
+            }
+            if (queries["probability"] != undefined) {
+                probability = queries["probability"] > 1 ? 1 : queries["probability"];
+            }
+            if (queries["title"] != undefined) {
+                document.title = queries["title"];
+            }
             var timer;
             var delay = 1000 / refresh_rate;
             var loop = function () {
