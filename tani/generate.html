@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Falling Down Generator</title>
+    <style>
+        body {
+            background: #DDD;
+            padding-top: 20px;
+        }
+
+        form {
+            background: #F5F5F5;
+            font-family: Arial, sans-serif;
+            display: table;
+            padding: 30px;
+            margin: 0 auto;
+            border: solid 1px #aaa;
+            border-radius: 10px; /* CSS3草案 */
+            -webkit-border-radius: 10px; /* Safari,Google Chrome用 */
+            -moz-border-radius: 10px;
+            align-content: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #555;
+        }
+
+        .text-element {
+            color: #444;
+            text-align: start;
+            font-family: Arial, sans-serif;
+            display: inline-block;
+            _display: inline;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            border: 0;
+            font-size: 1.3em;
+            font-family: Arial, sans-serif;
+            color: #444;
+            border: solid 1px #ccc;
+            margin: 0 0 10px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            max-width: 1500px;
+            min-width: 400px;
+            text-align-last: end;
+        }
+
+        input[type="submit"] {
+            border: 0;
+            font-size: 1.3em;
+            font-family: Arial, sans-serif;
+            color: #444;
+            border: solid 1px #ccc;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .help_button {
+            border: 0;
+            font-size: 0.8em;
+            font-family: Arial, sans-serif;
+            color: #444;
+            background-color: #ccc;
+            border: solid 1px #ccc;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            margin-left: 3px;
+            margin-right: 3px;
+            padding-left: 0.3em;
+            padding-right: 0.3em;
+            cursor: default;
+        }
+
+        .float {
+            font-size: 0.8em;
+            font-family: Arial, sans-serif;
+            background: #fff;
+            border: solid 1px #ccc;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            position: absolute;
+            padding: 3px;
+        }
+    </style>
+    <script>
+        var mouseevent;
+        document.onmousemove = function (e) {
+
+            if (!e) e = window.event;
+            mouseevent = e;
+        };
+        var float = function (message) {
+            var float = document.getElementById("float");
+            float.style.left = mouseevent.clientX + 10 + "px";
+            float.style.top = mouseevent.clientY + 10 + "px";
+            float.innerHTML = message;
+            float.style.display = "block"
+        }
+
+        var deletefloat = function () {
+            document.getElementById("float").style.display = "none";
+        }
+
+        window.onload = function () {
+            document.getElementById("float").style.display = "none";
+        }
+    </script>
+</head>
+<body>
+    <div id="float" class="float">a</div>
+    <form action="./" target="_blank">
+        <table>
+            <caption><h2>Falling Down Generator</h2></caption>
+            <tr>
+                <td>Words<span class="help_button" onmouseout="deletefloat()" onmouseover="float('落としたい言葉を入力して下さい。言葉と言葉の間には半角コンマを挿入して下さい。\<br \/\>デフォルト:s,m,kg,A,K,mol,cd,sr,Hz,N,Pa,J,W,C,V,F,Ω,S,Wb,T,H,℃,lm,lx,Bq,Gy,S,kat,￥,＄')">?</span></td>
+                <td><input type="text" name="units" /></td>
+            </tr>
+            <tr>
+                <td>Page Title<span class="help_button" onmouseout="deletefloat()" onmouseover="float('ページのタイトルを入力して下さい。\<br \/\>デフォルト:Tani Falling Down')">?</span></td>
+                <td><input type="text" name="title" /></td>
+            </tr>
+            <tr>
+                <td>Refresh Rate<span class="help_button" onmouseout="deletefloat()" onmouseover="float('リフレッシュレートを入力して下さい。あまりに大きい値を入力すると大変なことになります。\<br \/\>デフォルト:30')">?</span></td>
+                <td><input type="text" name="refresh_rate" /></td>
+            </tr>
+            <tr>
+                <td>Probability<span class="help_button" onmouseout="deletefloat()" onmouseover="float('1フレームあたりで言葉が落ちる確率を0から1の範囲で入力して下さい。\<br \/\>デフォルト:0.5')">?</span></td>
+                <td><input type="text" name="probability" /></td>
+            </tr>
+            <tr>
+                <td>Font Name<span class="help_button" onmouseout="deletefloat()" onmouseover="float('フォント名を入力して下さい。スペースが入るフォント名の場合は、シングルクォーテーションでくくって下さい。\<br \/\>デフォルト:sans-serif')">?</span></td>
+                <td><input type="text" name="font" /></td>
+            </tr>
+        </table>
+        <div class="center"><input type="submit" value="Generate" /></div>
+    </form>
+</body>
+</html>

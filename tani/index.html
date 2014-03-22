@@ -4,6 +4,98 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Tani Falling Down</title>
     <script>
+        var mouseevent;
+        var current_count = 0;
+        var isShowing = true;
+        function actionbar_animation(count, func) {
+            if (count == current_count) {
+                func();
+            } else {
+                var tmp = current_count;
+                setTimeout(function () { actionbar_animation(tmp, hide_actionbar) }, 3000);
+            }
+        }
+
+        var getHeight = function (height) {
+            return parseInt(height.substring(0, height.length - 2), 10);
+        };
+
+        var show_animation = function () {
+            var element = document.getElementById("actionbar");
+            if (element.style.top != "0px") {
+                element.style.top = getHeight(element.style.top) + 2 + "px";
+                setTimeout(show_animation, 30);
+            } else {
+                var tmp = current_count;
+                setTimeout(function () { actionbar_animation(tmp, hide_actionbar) }, 3000);
+            }
+        }
+
+        var hide_animation = function () {
+            var element = document.getElementById("actionbar");
+            if (element.style.top != "-24px") {
+                element.style.top = getHeight(element.style.top) - 2 + "px";
+                setTimeout(hide_animation, 30);
+            } else {
+                element.style.display = "none";
+                isShowing = false;
+            }
+        }
+
+        var show_actionbar = function () {
+            isShowing = true;
+            document.getElementById("actionbar").style.display = "block";
+            show_animation(this.element);
+        }
+
+        var hide_actionbar = function () {
+            hide_animation();
+        }
+
+        var isEnabledFullscreen = function (object) {
+            if (object.fullScreenEnabled || object.msFullscreenEnabled || object.mozFullScreenEnabled || object.webkitFullscreenEnabled) {
+                return true;
+            }
+            return false;
+        }
+
+        var requestFullscreen = function (element) {
+            var list = [
+                "requestFullScreen",
+                "webkitRequestFullScreen",
+                "mozRequestFullScreen",
+                "msRequestFullscreen"
+            ];
+            var i;
+            var num = list.length;
+            for (i = 0; i < num; i++) {
+                if (element[list[i]]) {
+                    element[list[i]]();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        var changeScreenState = function () {
+            var wrapper = document.getElementById("can");
+
+            console.log("set fullscreen");
+            isFullScreen = requestFullscreen(wrapper);
+
+        }
+
+        window.onmousemove = function (e) {
+
+            if (!e) e = window.event;
+            mouseevent = e;
+            if (e.layerY < 200) {
+                current_count++;
+                if (!isShowing) {
+                    show_actionbar();
+                }
+            }
+        };
         var unit_array = ["s", "m", "kg", "A", "K", "mol", "cd", "sr", "Hz", "N", "Pa", "J", "W", "C", "V", "F", "Ω", "S", "Wb", "T", "H", "℃", "lm", "lx", "Bq", "Gy", "Sv", "kat", "￥", "＄"];
         var refresh_rate = 30;
         var g = 9.8;
@@ -17,8 +109,10 @@
                 for (var i = 0; i < parameters.length; i++) {
                     var element = parameters[i].split('=');
                     var paramName = decodeURIComponent(element[0]);
-                    var paramValue = decodeURIComponent(element[1]);
-                    result[paramName] = paramValue;
+                    if (element[1].length != 0) {
+                        var paramValue = decodeURIComponent(element[1]);
+                        result[paramName] = paramValue;
+                    }
                 }
             }
             return result;
@@ -34,6 +128,7 @@
             if (!canvas || !canvas.getContext) return false;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            document.getElementsByTagName("body")
         }
 
         var move_unit = function (pos) {
@@ -70,6 +165,7 @@
 
         var draw_all = function (context, positions) {
             context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            context.fillStyle = "#000";
             for (var i = 0; i < positions.length; i++) {
                 draw_unit(context, positions[i]);
             }
@@ -86,7 +182,6 @@
             } else {
                 font_name = ctx.font.substring(ctx.font.indexOf("px") + 3, ctx.font.length);
             }
-            ctx.fillStyle = "#000";
             var positions = [];
             if (queries["refresh_rate"] != undefined) {
                 refresh_rate = queries["refresh_rate"];
@@ -99,6 +194,13 @@
             }
             var timer;
             var delay = 1000 / refresh_rate;
+            var count = current_count;
+            var wrapper = document.getElementById("can");
+            wrapper.allowFullscreen = true;
+            if (!isEnabledFullscreen(document)) {
+                document.getElementById("full_screen").style.display = "none";
+            }
+            setTimeout(function () { actionbar_animation(count, hide_actionbar) }, 3000);
             var loop = function () {
                 move_all(positions);
                 add_unit(positions);
@@ -124,15 +226,38 @@
                 width: 100%;
                 height: 100%;
                 position: fixed;
+                background: #FFF;
             }
 
+            body #actionbar {
+                position: absolute;
+                width: 100%;
+                height: 24px;
+                background: #EEEEEE;
+                border-bottom: solid 1px #ccc;
+                text-align: right;
+            }
+
+        .button {
+            margin: 4px;
+        }
+
+        canvas{
+            background: #FFF;
+        }
         /* ]]> */
     </style>
 </head>
 
 <body>
+
     <div id="wrapper">
         <canvas id="can">HTML5非対応のブラウザではご覧頂けません。</canvas>
     </div>
+    <div id="actionbar" style="top:0px">
+        <a href="./generate.html"><img src="./img/function.png" class="button" /></a>
+        <img src="./img/full_screen.png" class="button" id="full_screen" onclick="changeScreenState()" />
+    </div>
+
 </body>
 </html>
