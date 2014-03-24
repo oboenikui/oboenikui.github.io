@@ -1,35 +1,69 @@
-IMG_PATH = "images/";
-COLOR_FOOTER = "_color.png"
-GRAY_FOOTER = "_gray.png";
-function mouseOverAction(c){
-  var parent = c.parentElement;
-  var newImageName = parent.id+COLOR_FOOTER;
-  c.src = IMG_PATH+newImageName;
+var length_list = new Array();
+var serial_numbers = new Array();
+function mouseOverAction(c) {
+    if (!length_list[c.id]) {
+        length_list[c.id] = 50;
+        c.style.width = "50px";
+        serial_numbers[c.id] = 0;
+    } else {
+        serial_numbers[c.id]++;
+    }
+    switch (c.id) {
+        case "twitter":
+            c.style.background = "#5ea9dd";
+            break;
+        case "github":
+            c.style.background = "#000";
+            break;
+        case "apps":
+            c.style.background = "#408080";
+            break;
+    }
+    var serial = serial_numbers[c.id];
+    changeWidth(c, 10, 200, serial);
 }
 
-function mouseOutAction(c){
-  var parent = c.parentElement;
-  var newImageName = parent.id+GRAY_FOOTER;
-  c.src = IMG_PATH+newImageName;
+function mouseOutAction(c) {
+    c.style.background = "#aaa";
+    c.getElementsByTagName("span")[0].style.display = "none";
+    serial_numbers[c.id]++;
+    var serial = serial_numbers[c.id];
+    changeWidth(c, -10, 50, serial);
 }
 
-function onWindowLoad() {
-  var links = document.getElementById("side_bar").querySelectorAll("a");
-  for(var i=0;i<links.length;i++){
-    var link = links[i];
-    var imageName = link.id+GRAY_FOOTER;
-    var img = document.createElement("img");
-    img.setAttribute("src", IMG_PATH+imageName);
-    img.setAttribute("alt", link.textContent);
-    img.setAttribute("width", "50");
-    img.setAttribute("height", "50");
-    img.setAttribute("onmouseover", "mouseOverAction(this)");
-    img.setAttribute("onmouseout", "mouseOutAction(this)");
-    link.textContent="";
-    link.appendChild(img);
-  }
+function changeWidth(c, diff, to, serial) {
+    if (serial != serial_numbers[c.id]) {
+        return;
+    }
+    length_list[c.id] = getWidth(c.style.width) + diff;
+    c.style.width = length_list[c.id] + "px";
+    if (diff > 0) {
+        if (length_list[c.id] < to) {
+            setTimeout(function () {changeWidth(c, diff, to, serial) }, 6);
+        } else {
+            c.getElementsByTagName("span")[0].style.display = "block";
+        }
+    } else {
+        if (length_list[c.id] > to) {
+            setTimeout(function () { changeWidth(c, diff, to, serial) }, 6);
+        }
+    }
 }
 
-function drawRect(){
-  
+function getWidth(width) {
+    return parseInt(width.substring(0, width.length - 2), 10);
+};
+
+function preload() {
+    var spans = document.getElementsByTagName("span");
+    for(var i=0;i<spans.length;i++){
+        if (spans[i].id == "text") {
+            spans[i].style.display = "none";
+        }
+    }
+}
+
+
+function drawRect() {
+
 }

@@ -1,18 +1,72 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:700' rel='stylesheet' type='text/css' />
     <title>oboenikui</title>
+
     <script type="text/javascript" src="contents.js"></script>
-  </head>
-  <body>
+    <style type="text/css">
+        body {
+            background: #DDD;
+        }
+
+        .sidebar_link {
+            text-decoration: none;
+        }
+
+        .sidebar_div {
+            position: static;
+            background: #AAA;
+            width: 50px;
+            height: 50px;
+            text-align: start;
+            white-space: nowrap;
+            line-height: 50px;
+            margin: 4px;
+            padding: 7px;
+        }
+
+        .sidebar_text {
+            color: #FFF;
+            margin-left: 7px;
+            font-family: Ubuntu Mono;
+            font-size: 40px;
+            text-align: center;
+            line-height: 50px;
+        }
+    </style>
+</head>
+<body>
     <p id="side_bar">
-      <a href="https://twitter.com/oboenikui" target="_blank" id="twitter">Twitter</a></br>
-      <a href="http://www.fujitv.co.jp/b_hp/sazaesan/" target="_blank" id="sazae">Sazae</a>
+        <div>
+            <a href="https://twitter.com/oboenikui" target="_blank" class="sidebar_link">
+                <div class="sidebar_div" id="twitter" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)">
+                    <img src="./img/twitter.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">twitter</span>
+                </div>
+            </a>
+        </div>
+        <!--<a href="http://www.fujitv.co.jp/b_hp/sazaesan/" target="_blank" id="sazae" class="sidebar_link" style="padding-left:0px;padding-bottom:0px;">Sazae</a>-->
+        <div>
+            <a href="https://github.com/oboenikui" target="_blank" class="sidebar_link">
+                <div class="sidebar_div" id="github" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)">
+                    <img src="./img/github.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">github</span>
+                </div>
+            </a>
+        </div>
+        <div>
+            <a href="https://play.google.com/store/apps/developer?id=oboenikui" target="_blank" class="sidebar_link">
+                <div class="sidebar_div" id="apps" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)">
+                    <img src="./img/apps.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">apps</span>
+                </div>
+            </a>
+        </div>
     </p>
     <script>
-      window.onload = onWindowLoad();
+        window.onload = function () {
+            preload();
+        }
     </script>
-  </body>
+</body>
   
 </html>
