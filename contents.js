@@ -73,12 +73,6 @@ function getWidth(width) {
 };
 
 function preload() {
-    var spans = document.getElementsByTagName("span");
-    for(var i=0;i<spans.length;i++){
-        if (spans[i].id == "text") {
-            spans[i].style.display = "none";
-        }
-    }
 }
 
 
