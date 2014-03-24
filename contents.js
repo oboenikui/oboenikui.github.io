@@ -31,6 +31,24 @@ function mouseOutAction(c) {
     changeWidth(c, -10, 50, serial);
 }
 
+function mouseClickAction(id) {
+    var url;
+    switch (id) {
+        case "twitter":
+            url = "https://twitter.com/oboenikui";
+            break;
+
+        case "github":
+            url = "https://github.com/oboenikui";
+            break;
+
+        case "apps":
+            url = "https://play.google.com/store/apps/developer?id=oboenikui";
+            break;
+    }
+    window.open(url, "_blank");
+}
+
 function changeWidth(c, diff, to, serial) {
     if (serial != serial_numbers[c.id]) {
         return;

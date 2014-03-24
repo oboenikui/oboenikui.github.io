@@ -11,12 +11,18 @@
             background: #DDD;
         }
 
+            body #side_bar {
+                position: absolute;
+                width: 200px;
+            }
+
         .sidebar_link {
             text-decoration: none;
+            width: 50px;
         }
 
         .sidebar_div {
-            position: static;
+            position: relative;
             background: #AAA;
             width: 50px;
             height: 50px;
@@ -25,6 +31,7 @@
             line-height: 50px;
             margin: 4px;
             padding: 7px;
+            cursor: pointer;
         }
 
         .sidebar_text {
@@ -38,35 +45,26 @@
     </style>
 </head>
 <body>
-    <p id="side_bar">
-        <div>
-            <a href="https://twitter.com/oboenikui" target="_blank" class="sidebar_link">
-                <div class="sidebar_div" id="twitter" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)">
-                    <img src="./img/twitter.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">twitter</span>
-                </div>
-            </a>
+    <div id="side_bar">
+
+        <div class="sidebar_div" id="twitter" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
+            <img src="./img/twitter.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">twitter</span>
         </div>
-        <!--<a href="http://www.fujitv.co.jp/b_hp/sazaesan/" target="_blank" id="sazae" class="sidebar_link" style="padding-left:0px;padding-bottom:0px;">Sazae</a>-->
-        <div>
-            <a href="https://github.com/oboenikui" target="_blank" class="sidebar_link">
-                <div class="sidebar_div" id="github" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)">
-                    <img src="./img/github.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">github</span>
-                </div>
-            </a>
+
+        <div class="sidebar_div" id="github" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
+            <img src="./img/github.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">github</span>
         </div>
-        <div>
-            <a href="https://play.google.com/store/apps/developer?id=oboenikui" target="_blank" class="sidebar_link">
-                <div class="sidebar_div" id="apps" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)">
-                    <img src="./img/apps.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">apps</span>
-                </div>
-            </a>
+
+        <div class="sidebar_div" id="apps" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
+            <img src="./img/apps.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">apps</span>
         </div>
-    </p>
+
+    </div>
     <script>
         window.onload = function () {
             preload();
         }
     </script>
 </body>
-  
+
 </html>
