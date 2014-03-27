@@ -2,18 +2,41 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:700' rel='stylesheet' type='text/css' />
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700' rel='stylesheet' type='text/css' />
+    <link rel="shortcut icon" href="img/favicon.ico" />
     <title>oboenikui</title>
 
     <script type="text/javascript" src="contents.js"></script>
     <style type="text/css">
         body {
             background: #DDD;
+            margin: 0px;
         }
-
+            body #header {
+                background: #333;
+                color: #FFF;
+                position: relative;
+                font-family: Ubuntu Mono;
+                font-weight: 700;
+                font-size: 30px;
+                padding: 5px;
+                padding-left: 72px;
+            }
             body #side_bar {
-                position: absolute;
-                width: 200px;
+                position: relative;
+                width: 72px;
+                height: 100%;
+                padding: 8px;
+            }
+
+            body #footer {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                position: fixed;
+                bottom: 0;
+                color: #FFF;
+                background: #333;
             }
 
         .sidebar_link {
@@ -38,14 +61,26 @@
             color: #FFF;
             margin-left: 7px;
             font-family: Ubuntu Mono;
+            font-weight: 700;
             font-size: 40px;
             text-align: center;
-            line-height: 50px; 
+            line-height: 50px;
             display: none;
         }
+
+        .copyright {
+            position: relative;
+            font-weight: 400;
+            font-family: Ubuntu Mono;
+            text-align: center;
+        }
     </style>
+
 </head>
 <body>
+    <div id="header">
+        oboenikui.com
+    </div>
     <div id="side_bar">
 
         <div class="sidebar_div" id="twitter" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
@@ -56,14 +91,26 @@
             <img src="./img/github.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">github</span>
         </div>
 
+        <div class="sidebar_div" id="hatena" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
+            <img src="./img/hatenablog.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">hatena</span>
+        </div>
+        
         <div class="sidebar_div" id="apps" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
             <img src="./img/apps.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">apps</span>
         </div>
-
+    </div>
+    <div id="footer">
+        <div class="copyright">
+            Copyright &copy; 2014 oboenikui All Right Reserved.
+        </div>
     </div>
     <script>
         window.onload = function () {
             preload();
+        }
+
+        window.onresize = function () {
+            onResized();
         }
     </script>
 </body>
