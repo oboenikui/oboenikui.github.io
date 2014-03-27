@@ -6,7 +6,7 @@ var MIN_WIDTH = 50;
 var animation_available = true;
 var flag_smartphone = false;
 function mouseOverAction(c) {
-    if (!length_list[c.id]) {
+    if (!length_list[c.id]&&!flag_smartphone&&animation_available) {
         length_list[c.id] = 50;
         c.style.width = "50px";
         serial_numbers[c.id] = 0;
@@ -90,12 +90,14 @@ function setAnimate(available) {
     if (animation_available) {
         var childs = document.getElementById("side_bar").getElementsByClassName("sidebar_div");
         for (var i = 0; i < childs.length; i++) {
+            childs[i].getElementsByTagName("span")[0].style.display = "none";
             childs[i].style.width = "50px";
         }
     } else {
         var childs = document.getElementById("side_bar").getElementsByClassName("sidebar_div");
         for (var i = 0; i < childs.length; i++) {
             childs[i].style.width = "200px";
+            childs[i].getElementsByTagName("span")[0].style.display = "block";
         }
     }
 }
