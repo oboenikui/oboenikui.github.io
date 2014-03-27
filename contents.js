@@ -126,7 +126,14 @@ function preload() {
         meta.setAttribute("content", "width=device-width");
         head.appendChild(meta);
         var cr = document.getElementsByClassName("copyright")[0];
-        cr.textContent = cr.textContent.substring(cr.textContent.indexOf("Copyright")+10, cr.textContent.indexOf("All Right") - 1);
+        cr.textContent = cr.textContent.substring(cr.textContent.indexOf("Copyright") + 10, cr.textContent.indexOf("All Right") - 1);
+        var childs = document.getElementsByClassName("sidebar_div");
+        for (var i = 0; i < childs.length; i++) {
+            childs[i].onmouseover = null;
+            childs[i].onmouseout = null;
+            childs[i].addEventListener("touchstart", function (event) { mouseOverAction(event.currentTarget)}, false);
+            childs[i].addEventListener("touchend", function (event) { mouseOutAction(event.currentTarget) }, false);
+        }
     }
 }
 
