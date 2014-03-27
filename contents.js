@@ -126,9 +126,8 @@ function preload() {
         meta.setAttribute("content", "width=device-width");
         head.appendChild(meta);
         var cr = document.getElementsByClassName("copyright")[0];
-        cr.innerText = cr.innerText.substring(10, cr.innerText.indexOf("All Right") - 1);
+        cr.textContent = cr.textContent.substring(cr.textContent.indexOf("Copyright")+10, cr.textContent.indexOf("All Right") - 1);
     }
-
 }
 
 
