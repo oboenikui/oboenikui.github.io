@@ -109,6 +109,9 @@ var touchX;
 var touchY;
 
 function onTouchMoved(event) {
+    if(event.type="touchstart"){
+        event.preventDefault();
+    }
     touchX = event.touches[0].pageX;
     touchY = event.touches[0].pageY;
 }
@@ -116,12 +119,6 @@ function onTouchMoved(event) {
 function onTouchEnd(event) {
     mouseOutAction(event.currentTarget);
     var bounds = event.currentTarget.getBoundingClientRect();
-    console.log("top=" + bounds.top);
-    console.log("bottom=" + bounds.bottom);
-    console.log("left=" + bounds.left);
-    console.log("right=" + bounds.right);
-    console.log("x=" + touchX);
-    console.log("y=" + touchY);
     if (touchX >= bounds.left && touchX <= bounds.right && touchY >= bounds.top && touchY <= bounds.bottom) {
         mouseClickAction(event.currentTarget.id);
     }
