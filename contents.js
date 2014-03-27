@@ -4,9 +4,8 @@ var VELOCITY = 10;
 var MAX_WIDTH = 200;
 var MIN_WIDTH = 50;
 var animation_available = true;
-var flag_smartphone = false;
 function mouseOverAction(c) {
-    if (!length_list[c.id]&&!flag_smartphone&&animation_available) {
+    if (!length_list[c.id]&&animation_available) {
         length_list[c.id] = 50;
         c.style.width = "50px";
         serial_numbers[c.id] = 0;
@@ -27,14 +26,14 @@ function mouseOverAction(c) {
             c.style.background = "#408080";
             break;
     }
-    if (flag_smartphone || !animation_available) return;
+    if (!animation_available) return;
     var serial = serial_numbers[c.id];
     changeWidth(c, VELOCITY, MAX_WIDTH, serial);
 }
 
 function mouseOutAction(c) {
     c.style.background = "#aaa";
-    if (flag_smartphone || !animation_available) return;
+    if (!animation_available) return;
     c.getElementsByTagName("span")[0].style.display = "none";
     serial_numbers[c.id]++;
     var serial = serial_numbers[c.id];
@@ -87,7 +86,6 @@ function getWidth(width) {
 };
 
 function setAnimate(available) {
-    if(flag_smartphone) return;
     animation_available = available;
     if (animation_available) {
         var childs = document.getElementById("side_bar").getElementsByClassName("sidebar_div");
@@ -105,10 +103,27 @@ function setAnimate(available) {
 }
 
 function onResized() {
-    if (screen.availWidth <= 320) {
-        setAnimate(false);
-    } else {
-        setAnimate(true);
+}
+
+var touchX;
+var touchY;
+
+function onTouchMoved(event) {
+    touchX = event.touches[0].pageX;
+    touchY = event.touches[0].pageY;
+}
+
+function onTouchEnd(event) {
+    mouseOutAction(event.currentTarget);
+    var bounds = event.currentTarget.getBoundingClientRect();
+    console.log("top=" + bounds.top);
+    console.log("bottom=" + bounds.bottom);
+    console.log("left=" + bounds.left);
+    console.log("right=" + bounds.right);
+    console.log("x=" + touchX);
+    console.log("y=" + touchY);
+    if (touchX >= bounds.left && touchX <= bounds.right && touchY >= bounds.top && touchY <= bounds.bottom) {
+        mouseClickAction(event.currentTarget.id);
     }
 }
 
@@ -118,8 +133,6 @@ function preload() {
         navigator.userAgent.indexOf('iPod') > 0 ||
         navigator.userAgent.indexOf('Android') > 0 ||
         navigatot.userAgent.indexOf('Windows Phone') > 0) {
-        setAnimate(false);
-        flag_smartphone = true;
         var head = document.getElementsByTagName("head")[0];
         var meta = document.createElement("meta");
         meta.setAttribute("name", "viewport");
@@ -131,8 +144,11 @@ function preload() {
         for (var i = 0; i < childs.length; i++) {
             childs[i].onmouseover = null;
             childs[i].onmouseout = null;
-            childs[i].addEventListener("touchstart", function (event) { mouseOverAction(event.currentTarget)}, false);
-            childs[i].addEventListener("touchend", function (event) { mouseOutAction(event.currentTarget) }, false);
+            childs[i].onclick = null;
+            childs[i].addEventListener("touchstart", function (event) { onTouchMoved(event); mouseOverAction(event.currentTarget) }, false);
+            childs[i].addEventListener("touchmove", onTouchMoved, false);
+            childs[i].addEventListener("touchend", onTouchEnd, false);
+            childs[i].addEventListener("touchcancel", function (event) { mouseOutAction(event.currentTarget) }, false);
         }
     }
 }
