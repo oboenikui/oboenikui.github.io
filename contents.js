@@ -119,6 +119,10 @@ function preload() {
         navigatot.userAgent.indexOf('Windows Phone') > 0) {
         setAnimate(false);
         flag_smartphone = true;
+        var head = document.getElementsByTagName("head")[0];
+        var meta = document.createElement("meta");
+        meta.setAttribute("viewport", "width=device-width");
+        head.appendChild(meta);
     }
 
 }
