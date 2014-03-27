@@ -27,12 +27,14 @@ function mouseOverAction(c) {
             c.style.background = "#408080";
             break;
     }
+    if (flag_smartphone || !animation_available) return;
     var serial = serial_numbers[c.id];
     changeWidth(c, VELOCITY, MAX_WIDTH, serial);
 }
 
 function mouseOutAction(c) {
     c.style.background = "#aaa";
+    if (flag_smartphone || !animation_available) return;
     c.getElementsByTagName("span")[0].style.display = "none";
     serial_numbers[c.id]++;
     var serial = serial_numbers[c.id];
@@ -62,7 +64,7 @@ function mouseClickAction(id) {
 }
 
 function changeWidth(c, diff, to, serial) {
-    if (serial != serial_numbers[c.id] || flag_smartphone || !animation_available) {
+    if (serial != serial_numbers[c.id]) {
         return;
     }
     length_list[c.id] = getWidth(c.style.width) + diff;
