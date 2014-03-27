@@ -113,7 +113,8 @@ function onResized() {
 }
 
 function preload() {
-    if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) ||
+    if (navigator.userAgent.indexOf('iPhone') > 0 ||
+        navigator.userAgent.indexOf('iPad') >0  ||
         navigator.userAgent.indexOf('iPod') > 0 ||
         navigator.userAgent.indexOf('Android') > 0 ||
         navigatot.userAgent.indexOf('Windows Phone') > 0) {
@@ -124,6 +125,8 @@ function preload() {
         meta.setAttribute("name", "viewport");
         meta.setAttribute("content", "width=device-width");
         head.appendChild(meta);
+        var cr = document.getElementsByClassName("copyright")[0];
+        cr.innerText = cr.innerText.substring(10, cr.innerText.indexOf("All Right") - 1);
     }
 
 }
