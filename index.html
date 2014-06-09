@@ -8,6 +8,7 @@
     <title>oboenikui</title>
 
     <script type="text/javascript" src="contents.js"></script>
+    <script type="text/javascript" src="smartphone.js"></script>
     <style type="text/css">
         body {
             background: #DDD;
@@ -16,17 +17,20 @@
             body #header {
                 background: #333;
                 color: #FFF;
-                position: relative;
+                width: 100%;
+                position: fixed;
                 font-family: Ubuntu Mono;
                 font-weight: 700;
                 font-size: 30px;
                 padding: 5px;
                 padding-left: 72px;
+                margin: 0 auto;
             }
             body #side_bar {
-                position: relative;
+                position: fixed;
+                top: 40px;
                 width: 72px;
-                height: 100%;
+                height: auto;
                 padding: 8px;
             }
 
@@ -79,9 +83,6 @@
 
 </head>
 <body>
-    <div id="header">
-        oboenikui.com
-    </div>
     <div id="side_bar">
 
         <div class="sidebar_div" id="twitter" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
@@ -104,6 +105,9 @@
         <div class="copyright">
             Copyright &copy; 2014 oboenikui All Right Reserved.
         </div>
+    </div>
+    <div id="header">
+        oboenikui.com
     </div>
     <script>
         window.onload = function () {
