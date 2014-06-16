@@ -26,7 +26,7 @@
         var encode = function () {
             var url = document.getElementById("url").value;
             var resultElement = document.getElementById("encoded_url");
-            resultElement.value = "http://oboenikui.com/intent?encoded_url=" + window.btoa(url);
+            resultElement.value = "http://oboenikui.com/intent?encoded_url=" + window.btoa(encodeURI(url));
             
             resultElement.focus();
             resultElement.select();
@@ -37,7 +37,7 @@
                 navigator.userAgent.indexOf('iPad') > 0 ||
                 navigator.userAgent.indexOf('iPod') > 0 ||
                 navigator.userAgent.indexOf('Android') > 0 ||
-                navigatot.userAgent.indexOf('Windows Phone') > 0) {
+                navigator.userAgent.indexOf('Windows Phone') > 0) {
                 loadSmartphone();
             }
         }
