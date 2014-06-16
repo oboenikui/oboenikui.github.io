@@ -19,20 +19,15 @@
         }
         var open = function (str) {
             var url = window.atob(str);
-            if (url.indexOf("http://") == 0 || url.indexOf("https://") == 0) {
-                window.location.href = url;
-            }
+            window.location.href = "https://www.google.com/search?tbm=isch&q="+url;
         }
         suggest();
         
         var encode = function () {
             var url = document.getElementById("url").value;
             var resultElement = document.getElementById("encoded_url");
-            if (url && (url.indexOf("http://") == 0 || url.indexOf("https://") == 0)) {
-                resultElement.value = "http://oboenikui.com/intent?encoded_url=" + window.btoa(url);
-            } else if(url) {
-                resultElement.value = "http://oboenikui.com/intent?encoded_url=" + window.btoa("http://"+url);
-            }
+            resultElement.value = "http://oboenikui.com/intent?encoded_url=" + window.btoa(url);
+            
             resultElement.focus();
             resultElement.select();
         }
