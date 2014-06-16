@@ -27,11 +27,14 @@
         
         var encode = function () {
             var url = document.getElementById("url").value;
+            var resultElement = document.getElementById("encoded_url");
             if (url && (url.indexOf("http://") == 0 || url.indexOf("https://") == 0)) {
-                document.getElementById("encoded_url").value = "http://oboenikui.com/intent?encoded_url=" + window.btoa(url);
+                resultElement.value = "http://oboenikui.com/intent?encoded_url=" + window.btoa(url);
             } else if(url) {
-                document.getElementById("encoded_url").value = "http://oboenikui.com/intent?encoded_url=" + window.btoa("http://"+url);
+                resultElement.value = "http://oboenikui.com/intent?encoded_url=" + window.btoa("http://"+url);
             }
+            resultElement.focus();
+            resultElement.select();
         }
     </script>
 </head>
