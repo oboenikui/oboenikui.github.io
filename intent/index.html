@@ -3,7 +3,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>tweet intent</title>
-    <script type="text/javascript" src="/js/cryptico.min.js"></script>
     <script>
         var suggest = function(){
             if(document.location.search.length){
@@ -12,16 +11,17 @@
                 for (var i = 0; i < params.length; i++) {
                     var pair = params[i].split("=");
                     if (pair[0] == "encoded_url") {
-                        if (pair[1].indexOf("http://") == 0 || pair[1].indexOf("https://") == 0) {
-                            open(pair[1]);
-                        }
+                        open(pair[1]);
                         return;
                     }
                 }
             }
         }
-        var open = function(str){
-            window.location.href = window.atob(str);
+        var open = function (str) {
+            var url = window.atob(str);
+            if (url.indexOf("http://") == 0 || url.indexOf("https://") == 0) {
+                window.location.href = url;
+            }
         }
         suggest();
         
