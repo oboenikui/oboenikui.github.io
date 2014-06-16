@@ -3,30 +3,43 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>tweet intent</title>
+    <script type="text/javascript" src="/js/cryptico.min.js"></script>
     <script>
-        if(document.location.search.length){
-            var params = document.location.search.substring(1).trim("&");
-            for (var i = 0; i < params.length; i++) {
-                var pair=params[i].substring("=");                
-                if (pair[0] == "id") {
-                    getTweetUrl(pair[1]);
-                    break;
+        var suggest = function(){
+            if(document.location.search.length){
+                var params = document.location.search.substring(1).split("&");
+                console.log(params);
+                for (var i = 0; i < params.length; i++) {
+                    var pair = params[i].split("=");
+                    if (pair[0] == "encoded_url") {
+                        if (pair[1].indexOf("http://") == 0 || pair[1].indexOf("https://") == 0) {
+                            open(pair[1]);
+                        }
+                        return;
+                    }
                 }
             }
         }
-        function getTweetUrl(id) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "https://api.twitter.com/11/statuses/oembed.json?id=" + id, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 0) {
-                    var jsonObj = JSON.parse(xhr.responseText);
-                    document.location.href = jsonObj.url;
-                }
+        var open = function(str){
+            window.location.href = window.atob(str);
+        }
+        suggest();
+        
+        var encode = function () {
+            var url = document.getElementById("url").value;
+            if (url && (url.indexOf("http://") == 0 || url.indexOf("https://") == 0)) {
+                document.getElementById("encoded_url").value = "http://oboenikui.com/intent?encoded_url=" + window.btoa(url);
+            } else if(url) {
+                document.getElementById("encoded_url").value = "http://oboenikui.com/intent?encoded_url=" + window.btoa("http://"+url);
             }
         }
     </script>
 </head>
 <body>
-
+    <form name="encode_form" action="/intent" method="GET" onsubmit="encode(); return false;">
+        <input id="url" type="text" />
+        <input type="submit" /><br />
+        <input id="encoded_url" type="text" readonly="readonly" value="Result URL" />
+    </form>
 </body>
 </html>
