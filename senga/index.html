@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>TypeScript HTML App</title>
+    <link rel="stylesheet" href="app.css" type="text/css" />
+    <script src="app.js"></script>
+
+</head>
+<body>
+    <form onsubmit="start();return false">
+        <input type="file" id="file" accept="image/png,image/jpeg,image/gif" />
+        <input type="submit" value="決定" />
+        <input type="button" id="output_png" onclick="outputPNG()" value="PNG出力"/>
+    </form><br />
+    <canvas id="canvas" width="0" height="0"></canvas>
+    <canvas id="tmp_canvas" width="0" height="0"></canvas>
+</body>
+</html>
