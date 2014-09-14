@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<!-- Copyright 2013 The Chromium Authors. All rights reserved.
+     Use of this source code is governed by a BSD-style license that can be
+     found in the LICENSE file. -->
+<head>
+    <script>
+        window.onload = function () {
+            document.forms[0].addEventListener('submit', function () {
+                var text;
+                switch (document.forms[0].select.value) {
+                    case "asyley2eur":
+                        text = document.forms[0].price.value + "Asyley_は" + (document.forms[0].price.value * 600) + "EURです。"
+                        break;
+                    case "eur2asyley":
+                        text = document.forms[0].price.value + "EURは" + (document.forms[0].price.value / 600) + "Asyley_です。"
+                }
+                document.getElementById("result").innerText = text;
+
+            }, false);
+        }
+    </script>
+    <title>為替レート</title>
+</head>
+<body>
+    <form onsubmit="return false">
+        <input type="number" name="price"><br/>
+        <input type="radio" name="select" value="asyley2eur" checked> Asyley_をEURに<br/>
+        <input type="radio" name="select" value="eur2asyley"> EURをAsyley_に<br/>
+        <input type="submit" value="変換">
+        <div id="result"></div>
+    </form>
+    
+</body>
+</html>
