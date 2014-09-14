@@ -4,32 +4,33 @@
      Use of this source code is governed by a BSD-style license that can be
      found in the LICENSE file. -->
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script>
         window.onload = function () {
             document.forms[0].addEventListener('submit', function () {
                 var text;
                 switch (document.forms[0].select.value) {
                     case "asyley2eur":
-                        text = document.forms[0].price.value + "Asyley_ÇÕ" + (document.forms[0].price.value * 600) + "EURÇ≈Ç∑ÅB"
+                        text = document.forms[0].price.value + "Asyley_„ÅØ" + (document.forms[0].price.value * 600) + "EUR„Åß„Åô„ÄÇ"
                         break;
                     case "eur2asyley":
-                        text = document.forms[0].price.value + "EURÇÕ" + (document.forms[0].price.value / 600) + "Asyley_Ç≈Ç∑ÅB"
+                        text = document.forms[0].price.value + "EUR„ÅØ" + (document.forms[0].price.value / 600) + "Asyley_„Åß„Åô„ÄÇ"
                 }
                 document.getElementById("result").innerText = text;
 
             }, false);
         }
     </script>
-    <title>à◊ë÷ÉåÅ[Ég</title>
+    <title>ÁÇ∫Êõø„É¨„Éº„Éà</title>
 </head>
 <body>
     <form onsubmit="return false">
         <input type="number" name="price"><br/>
-        <input type="radio" name="select" value="asyley2eur" checked> Asyley_ÇEURÇ…<br/>
-        <input type="radio" name="select" value="eur2asyley"> EURÇAsyley_Ç…<br/>
-        <input type="submit" value="ïœä∑">
+        <input type="radio" name="select" value="asyley2eur" checked> Asyley_„ÇíEUR„Å´<br/>
+        <input type="radio" name="select" value="eur2asyley"> EUR„ÇíAsyley_„Å´<br/>
+        <input type="submit" value="Â§âÊèõ">
         <div id="result"></div>
     </form>
-    
+
 </body>
 </html>
