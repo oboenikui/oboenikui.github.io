@@ -9,7 +9,6 @@ window.onload = function () {
     canvas.height = window.innerHeight;
 
     space = new Space(canvas.getContext("2d"), window.innerWidth, window.innerHeight);
-    space.startAnimation();
 };
 
 window.onresize = function () {
@@ -24,11 +23,15 @@ window.onresize = function () {
 
 var Space = (function () {
     function Space(context, boardWidth, boardHeight) {
+        var _this = this;
         this.context = context;
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
         this.background = new Image();
         this.background.src = Space.BACKGROUND;
+        this.background.onload = function () {
+            _this.startAnimation();
+        };
     }
     Space.lerp = function (a, b, f) {
         return (b - a) * f + a;
