@@ -1,13 +1,89 @@
 ﻿var canvas;
+var draft_canvas;
 var space;
-
+var currentbirdindex = -1;
 window.onload = function () {
     canvas = document.getElementById("space");
+    draft_canvas = document.createElement("canvas");
     if (!canvas || !canvas.getContext)
         return false;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
+    draft_canvas.width = window.innerWidth;
+    draft_canvas.height = window.innerHeight;
+    if (navigator.pointerEnabled) {
+        canvas.addEventListener("pointerdown", function (e) {
+            currentbirdindex = getPointingBird(e);
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerDownEvent(e);
+            }
+        }, false);
+        canvas.addEventListener("pointermove", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerMoveEvent(e);
+            }
+        }, false);
+        canvas.addEventListener("pointerup", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent(e);
+                currentbirdindex = -1;
+            }
+        }, false);
+        canvas.addEventListener("pointercancel", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent(e);
+                currentbirdindex = -1;
+            }
+        }, false);
+    } else if (navigator.msPointerEnabled) {
+        canvas.addEventListener("MSPointerDown", function (e) {
+            currentbirdindex = getPointingBird(e);
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerDownEvent(e);
+            }
+        }, false);
+        canvas.addEventListener("MSPointerMove", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerMoveEvent(e);
+            }
+        }, false);
+        canvas.addEventListener("MSPointerUp", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent(e);
+                currentbirdindex = -1;
+            }
+        }, false);
+        canvas.addEventListener("MSPointerCancel", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent(e);
+                currentbirdindex = -1;
+            }
+        }, false);
+    } else {
+        canvas.addEventListener("mousedown", function (e) {
+            currentbirdindex = getPointingBird(e);
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerDownEvent(e);
+            }
+        }, false);
+        canvas.addEventListener("mousemove", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerMoveEvent(e);
+            }
+        }, false);
+        canvas.addEventListener("mouseup", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent(e);
+                currentbirdindex = -1;
+            }
+        }, false);
+        canvas.addEventListener("mousecancel", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent(e);
+                currentbirdindex = -1;
+            }
+        }, false);
+    }
     space = new Space(canvas.getContext("2d"), window.innerWidth, window.innerHeight);
 };
 
@@ -16,14 +92,32 @@ window.onresize = function () {
         return false;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    draft_canvas.width = window.innerWidth;
+    draft_canvas.height = window.innerHeight;
     if (space) {
         space.onSizeChanged(window.innerWidth, window.innerHeight);
     }
 };
 
+function getPointingBird(e) {
+    console.log(e);
+    var draft_context = draft_canvas.getContext("2d");
+    draft_context.clearRect(0, 0, canvas.width, canvas.height);
+    var i;
+    for (i = space.birds.length - 1; i >= 0; i--) {
+        space.birds[i].draw(draft_context);
+        var image = draft_context.getImageData(e.clientX, e.clientY, 1, 1);
+        if (image.data[3] > 0x7F) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 var Space = (function () {
     function Space(context, boardWidth, boardHeight) {
         var _this = this;
+        this.grabbing_bird = null;
         this.context = context;
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
@@ -101,6 +195,14 @@ var Space = (function () {
         this.boardHeight = h;
     };
 
+    Space.prototype.getGrabbingBird = function () {
+        return this.grabbing_bird;
+    };
+
+    Space.prototype.removeGrabbingBird = function () {
+        this.grabbing_bird = null;
+    };
+
     Space.prototype.stopAnimation = function () {
         if (this.mAnim) {
             window.clearInterval(this.mAnim);
@@ -114,7 +216,6 @@ var Space = (function () {
         this.reset();
         this.mAnim = window.setInterval(function () {
             _this.context.setTransform(1, 0, 0, 1, 0, 0);
-            _this.context.clearRect(0, 0, _this.boardWidth, _this.boardHeight);
             var widthScale = _this.boardWidth / _this.background.width;
             var heightScale = _this.boardHeight / _this.background.height;
             var sx, sy, sw, sh;
@@ -230,34 +331,36 @@ var Bird = (function () {
         return Space.mag(dx, dy) - this.r - other.r;
     };
 
-    Bird.prototype.onTouchEvent = function (action, e) {
-        switch (action) {
-            case "pointerdown":
-                this.grabbed = true;
-                this.grabx_offset = e.clientX - this.x;
-                this.graby_offset = e.clientY - this.y;
-                this.va = 0;
-            case "pointermove":
-                this.grabx = e.clientX - this.grabx_offset;
-                this.graby = e.clientY - this.graby_offset;
-                break;
-            case "pointercancel":
-            case "pointerup":
-                this.grabbed = false;
-                var a = Space.randsign() * Space.clamp(Space.mag(this.vx, this.vy) * 0.33, 0, 1080);
-                this.va = Space.randfrange(a * 0.5, a);
-                break;
-        }
-        return true;
+    Bird.prototype.onPointerDownEvent = function (e) {
+        this.grabbed = true;
+        this.grabx_offset = e.clientX - this.x;
+        this.graby_offset = e.clientY - this.y;
+        this.grabx = e.clientX - this.grabx_offset;
+        this.graby = e.clientY - this.graby_offset;
+        this.va = 0;
+    };
+
+    Bird.prototype.onPointerMoveEvent = function (e) {
+        this.grabx = e.clientX - this.grabx_offset;
+        this.graby = e.clientY - this.graby_offset;
+    };
+
+    Bird.prototype.onPointerUpEvent = function (e) {
+        this.grabbed = false;
+        var a = Space.randsign() * Space.clamp(Space.mag(this.vx, this.vy) * 0.33, 0, 1080);
+        this.va = Space.randfrange(a * 0.5, a);
     };
 
     Bird.prototype.draw = function (context) {
         context.save();
 
+        // Move registration point to the center of the canvas
         context.translate(this.x + this.w * this.scale / 2, this.y + this.h * this.scale / 2);
 
+        // Rotate 1 degree
         context.rotate(Math.PI * this.a / 180);
 
+        // Move registration point back to the top left corner of canvas
         context.translate(-(this.x + this.w * this.scale / 2), -(this.y + this.h * this.scale / 2));
         context.drawImage(this.image, this.x, this.y, this.w * this.scale, this.h * this.scale);
         context.restore();
@@ -266,3 +369,4 @@ var Bird = (function () {
     Bird.VMIN = 100.0;
     return Bird;
 })();
+//# sourceMappingURL=space_bird.js.map
