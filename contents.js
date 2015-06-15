@@ -7,28 +7,60 @@ window.onload = function () {
     }
     preload();
 }
-
+var fromElement = null;
 var mouseAction = function (e) {
-    if (isInChildMenuItem(e.toElement) && !isInSameChildMenu(e.fromElement, e.toElement)) {
-        var childMenuItem = getChildMenuItem(e.toElement)
-        if (!childMenuItem.getAttribute("color")) {
-            childMenuItem.setAttribute("color", 0);
+    if (e.toElement && e.fromElement) {
+        if (isInChildMenuItem(e.toElement) && !isInSameChildMenu(e.fromElement, e.toElement)) {
+            var childMenuItem = getChildMenuItem(e.toElement)
+            if (!childMenuItem.getAttribute("color")) {
+                childMenuItem.setAttribute("color", 0);
+            }
+            childMenuItem.setAttribute("type", "over");
+            childMenuItemColorAnimation(childMenuItem);
         }
-        childMenuItem.setAttribute("type", "over");
-        childMenuItemColorAnimation(childMenuItem);
+        if (isInChildMenuItem(e.fromElement) && !isInSameChildMenu(e.fromElement, e.toElement)) {
+            var childMenuItem = getChildMenuItem(e.fromElement);
+            if (!childMenuItem.getAttribute("color")) {
+                childMenuItem.setAttribute("color", 8);
+            }
+            childMenuItem.setAttribute("type", "out");
+            childMenuItemColorAnimation(childMenuItem);
+        }
 
-    }
-    if (isInChildMenuItem(e.fromElement) && !isInSameChildMenu(e.fromElement, e.toElement)) {
-        var childMenuItem = getChildMenuItem(e.fromElement);
-        if (!childMenuItem.getAttribute("color")) {
-            childMenuItem.setAttribute("color", 0);
+        if (isInSameMenu(e.fromElement, e.toElement)) {
+            return;
         }
-        childMenuItem.setAttribute("type", "out");
-        childMenuItemColorAnimation(childMenuItem);
+    } else {
+        var toElement = document.elementFromPoint(e.clientX, e.clientY);
+        if (isInChildMenuItem(toElement) && !isInSameChildMenu(fromElement, toElement)) {
+            var childMenuItem = getChildMenuItem(toElement)
+            if (!childMenuItem.getAttribute("color")) {
+                childMenuItem.setAttribute("color", 0);
+            }
+            childMenuItem.setAttribute("type", "over");
+            childMenuItemColorAnimation(childMenuItem);
+
+        }
+        if (isInChildMenuItem(fromElement) && !isInSameChildMenu(fromElement, toElement)) {
+            var childMenuItem = getChildMenuItem(fromElement);
+            if (!childMenuItem.getAttribute("color")) {
+                childMenuItem.setAttribute("color", 0);
+            }
+            childMenuItem.setAttribute("type", "out");
+            childMenuItemColorAnimation(childMenuItem);
+        }
+
+        if (isInSameMenu(fromElement, toElement)) {
+            if (e.type == "mouseover") {
+                fromElement = toElement;
+            }
+            return;
+        }
+        if (getMenuItem(toElement) == null) {
+            fromElement = null;
+        }
     }
-    if (isInSameMenu(e.fromElement, e.toElement)) {
-        return;
-    }
+
     var menu = getMenuItem(e.target);
     var innerMenu = menu.getElementsByClassName("inner_main_menu_item")[0];
     var childMenu = menu.getElementsByClassName("child_menu")[0];
@@ -47,6 +79,9 @@ var mouseAction = function (e) {
         childMenuAnimation(childMenu);
     } else {
         childMenu.setAttribute("mouse", e.type);
+    }
+    if (e.type == "mouseover") {
+        fromElement = toElement;
     }
 }
 
@@ -71,7 +106,7 @@ var isInChildMenuItem = function (element) {
 
 }
 
-var getMenuItem = function(element){
+var getMenuItem = function (element) {
     var tmp = element;
     while (tmp) {
         if (tmp.className == "main_menu_item") {
@@ -99,7 +134,7 @@ var mainMenuItemAnimation = function (element) {
     switch (element.getAttribute("mouse")) {
         case "mouseenter":
         case "mouseover":
-            n ++;
+            n++;
             if (n < max) {
                 element.setAttribute("rotateX", n);
                 setTimeout(function () { mainMenuItemAnimation(element) }, 17);
@@ -113,7 +148,7 @@ var mainMenuItemAnimation = function (element) {
             break;
         case "mouseleave":
         case "mouseout":
-            n --;
+            n--;
             if (n > 0) {
                 element.setAttribute("rotateX", n);
                 element.style.transform = "rotateX(" + 8 * n / max + "deg)";
@@ -153,7 +188,7 @@ var childMenuAnimation = function (element) {
                 children[children.length - (n + 1) / 2].parentElement.style.display = "block";
                 element.style.top = "90px";
             }
-             
+
             break;
         case "mouseleave":
         case "mouseout":
@@ -168,7 +203,7 @@ var childMenuAnimation = function (element) {
             }
             if (n % 2 == 0) {
                 element.style.top = "100%";
-                children[children.length - n/2 - 1].parentElement.style.display = null;
+                children[children.length - n / 2 - 1].parentElement.style.display = "none";
             } else {
                 element.style.top = "90px";
             }
@@ -177,12 +212,12 @@ var childMenuAnimation = function (element) {
     }
 }
 
-var childMenuItemColorAnimation = function(element){
+var childMenuItemColorAnimation = function (element) {
     var n = element.getAttribute("color");
     var type = element.getAttribute("type");
     switch (type) {
         case "over":
-            element.style.background = "#" + (0x111111 * (0xA - ++n)).toString(16);
+            element.style.background = "#" + (0x111111 * (0xA - ++n / 2)).toString(16);
             if (n < 8) {
                 setTimeout(function () { childMenuItemColorAnimation(element) }, 30);
                 element.setAttribute("color", n);
@@ -198,7 +233,7 @@ var childMenuItemColorAnimation = function(element){
                 element.removeAttribute("color");
                 element.removeAttribute("type");
             } else {
-                element.style.background = "#" + (0x111111 * (0xA - n)).toString(16);
+                element.style.background = "#" + (0x111111 * (0xA - n / 2)).toString(16);
                 setTimeout(function () { childMenuItemColorAnimation(element) }, 30);
                 element.setAttribute("color", n);
             }
