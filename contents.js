@@ -1,110 +1,134 @@
-var length_list = new Array();
-var serial_numbers = new Array();
-var VELOCITY = 10;
-var MAX_WIDTH = 200;
-var MIN_WIDTH = 50;
-var animation_available = true;
-function mouseOverAction(c) {
-    if (!length_list[c.id]&&animation_available) {
-        length_list[c.id] = 50;
-        c.style.width = "50px";
-        serial_numbers[c.id] = 0;
-    } else {
-        serial_numbers[c.id]++;
+window.onload = function () {
+
+    var main_items = document.getElementsByClassName("main_menu_item");
+    for (var i = 0; i < main_items.length; i++) {
+        main_items[i].addEventListener("mouseover", mouseAction, false);
+        main_items[i].addEventListener("mouseout", mouseAction, false);
     }
-    switch (c.id) {
-        case "twitter":
-            c.style.background = "#5ea9dd";
-            break;
-        case "github":
-            c.style.background = "#000";
-            break;
-        case "hatena":
-            c.style.background = "#2f2f2f";
-            break;
-        case "apps":
-            c.style.background = "#408080";
-            break;
-    }
-    if (!animation_available) return;
-    var serial = serial_numbers[c.id];
-    changeWidth(c, VELOCITY, MAX_WIDTH, serial);
+    preload();
 }
 
-function mouseOutAction(c) {
-    c.style.background = "#aaa";
-    if (!animation_available) return;
-    c.getElementsByTagName("span")[0].style.display = "none";
-    serial_numbers[c.id]++;
-    var serial = serial_numbers[c.id];
-    changeWidth(c, -VELOCITY, MIN_WIDTH, serial);
-}
+var mouseAction = function (e) {
 
-function mouseClickAction(id) {
-    var url;
-    switch (id) {
-        case "twitter":
-            url = "https://twitter.com/oboenikui";
-            break;
-
-        case "github":
-            url = "https://github.com/oboenikui";
-            break;
-
-        case "hatena":
-            url = "http://oboenikui.hatenablog.com";
-            break;
-
-        case "apps":
-            url = "https://play.google.com/store/apps/developer?id=oboenikui";
-            break;
-    }
-    window.open(url, "_blank");
-}
-
-function changeWidth(c, diff, to, serial) {
-    if (serial != serial_numbers[c.id]) {
+    if (isInSameMenu(e.fromElement, e.toElement)) {
         return;
     }
-    length_list[c.id] = getWidth(c.style.width) + diff;
-    c.style.width = length_list[c.id] + "px";
-    if (diff > 0) {
-        if (length_list[c.id] < to) {
-            setTimeout(function () {changeWidth(c, diff, to, serial) }, 10);
-        } else {
-            c.getElementsByTagName("span")[0].style.display = "block";
-        }
+    var menu = getMenuItem(e.target);
+    var innerMenu = menu.getElementsByClassName("inner_main_menu_item")[0];
+    var childMenu = menu.getElementsByClassName("child_menu")[0];
+    if (!innerMenu.getAttribute("mouse")) {
+        innerMenu.setAttribute("rotateX", (e.type == "mouseenter") || (e.type == "mouseover") ? 0 : childMenu.childElementCount * 2);
+        innerMenu.setAttribute("max", childMenu.childElementCount * 2);
+        innerMenu.setAttribute("mouse", e.type);
+        mainMenuItemAnimation(innerMenu);
     } else {
-        if (length_list[c.id] > to) {
-            setTimeout(function () { changeWidth(c, diff, to, serial) }, 10);
-        }
+        innerMenu.setAttribute("mouse", e.type);
+    }
+
+    if (!childMenu.getAttribute("mouse")) {
+        childMenu.setAttribute("n", (e.type == "mouseenter") || (e.type == "mouseover") ? 0 : childMenu.childElementCount * 2);
+        childMenu.setAttribute("mouse", e.type);
+        childMenuAnimation(childMenu);
+    } else {
+        childMenu.setAttribute("mouse", e.type);
     }
 }
 
-function getWidth(width) {
-    return parseInt(width.substring(0, width.length - 2), 10);
-};
+var isInSameMenu = function (element0, element1) {
+    return getMenuItem(element0) == getMenuItem(element1);
+}
 
-function setAnimate(available) {
-    animation_available = available;
-    if (animation_available) {
-        var childs = document.getElementById("side_bar").getElementsByClassName("sidebar_div");
-        for (var i = 0; i < childs.length; i++) {
-            childs[i].getElementsByTagName("span")[0].style.display = "none";
-            childs[i].style.width = "50px";
+var getMenuItem = function(element){
+    var tmp = element;
+    while (tmp) {
+        if (tmp.className == "main_menu_item") {
+            return tmp;
         }
-    } else {
-        var childs = document.getElementById("side_bar").getElementsByClassName("sidebar_div");
-        for (var i = 0; i < childs.length; i++) {
-            childs[i].style.width = "200px";
-            childs[i].getElementsByTagName("span")[0].style.display = "block";
-        }
+        tmp = tmp.parentElement;
     }
+    return null;
 }
 
-function onResized() {
+var mainMenuItemAnimation = function (element) {
+    var n = parseInt(element.getAttribute("rotateX"));
+    var max = parseInt(element.getAttribute("max"));
+    switch (element.getAttribute("mouse")) {
+        case "mouseenter":
+        case "mouseover":
+            n ++;
+            if (n < max) {
+                element.setAttribute("rotateX", n);
+                setTimeout(function () { mainMenuItemAnimation(element) }, 17);
+            } else {
+                element.removeAttribute("mouse");
+                element.removeAttribute("rotateX");
+                element.removeAttribute("max");
+            }
+            element.style.transform = "rotateX(" + 8 * n / max + "deg)";
+            element.style.boxShadow = "0 " + n / 2 + "px " + n + "px rgba(0,0,0,0.5)";
+            break;
+        case "mouseleave":
+        case "mouseout":
+            n --;
+            if (n > 0) {
+                element.setAttribute("rotateX", n);
+                element.style.transform = "rotateX(" + 8 * n / max + "deg)";
+                element.style.boxShadow = "0 " + n / 2 + "px " + n + "px rgba(0,0,0,0.5)"
+                setTimeout(function () { mainMenuItemAnimation(element) }, 17);
+
+            } else {
+                element.removeAttribute("mouse");
+                element.removeAttribute("rotateX");
+                element.removeAttribute("max");
+                element.style.transform = null;
+                element.style.boxShadow = null;
+
+            }
+
+            break;
+    }
+
 }
 
-function drawRect() {
+var childMenuAnimation = function (element) {
+    var n = parseInt(element.getAttribute("n"));
+    var children = element.getElementsByClassName("child_menu_item");
+    switch (element.getAttribute("mouse")) {
+        case "mouseenter":
+        case "mouseover":
+            if (n < children.length * 2) {
+                element.setAttribute("n", ++n);
+                setTimeout(function () { childMenuAnimation(element) }, 17);
+            } else {
+                element.removeAttribute("mouse");
+                element.removeAttribute("n");
+            }
+            if (n % 2 == 0) {
+                element.style.top = "100%";
+            } else {
+                children[children.length - (n + 1) / 2].parentElement.style.display = "block";
+                element.style.top = "90px";
+            }
+             
+            break;
+        case "mouseleave":
+        case "mouseout":
+            if (n > 0) {
+                setTimeout(function () { childMenuAnimation(element) }, 17);
+                element.setAttribute("n", --n);
 
+            } else {
+                element.removeAttribute("mouse");
+                element.removeAttribute("n");
+                element.style.bottom = null;
+            }
+            if (n % 2 == 0) {
+                element.style.top = "100%";
+                children[children.length - n/2 - 1].parentElement.style.display = null;
+            } else {
+                element.style.top = "90px";
+            }
+
+            break;
+    }
 }

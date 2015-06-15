@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700' rel='stylesheet' type='text/css' />
+    <link href='http://fonts.googleapis.com/css?family=Dosis:200' rel='stylesheet' type='text/css' />
     <link rel="shortcut icon" href="img/favicon.ico" />
     <link rel="apple-touch-icon-precomposed" href="img/favicon.ico" />
     <title>oboenikui</title>
@@ -10,112 +10,254 @@
     <script type="text/javascript" src="contents.js"></script>
     <script type="text/javascript" src="smartphone.js"></script>
     <style type="text/css">
-        body {
+        html, body {
             background: #DDD;
             margin: 0px;
+            height: 100%;
         }
-            body #header {
-                background: #333;
-                color: #FFF;
-                width: 100%;
-                position: fixed;
-                font-family: Ubuntu Mono;
-                font-weight: 700;
+
+        .header {
+            background: #333;
+            color: #FFF;
+            width: 100%;
+            height: 40px;
+            position: relative;
+            padding: 0px;
+            margin: 0 auto;
+            top: 0px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+        }
+
+            .header .header_text {
+                margin-left: 72px;
+                font-family: 'Dosis', sans-serif;
                 font-size: 30px;
-                padding: 5px;
-                padding-left: 72px;
-                margin: 0 auto;
-            }
-            body #side_bar {
-                position: fixed;
-                top: 40px;
-                width: 72px;
-                height: auto;
-                padding: 8px;
             }
 
-            body #footer {
-                width: 100%;
-                padding: 0;
-                margin: 0;
-                position: fixed;
-                bottom: 0;
-                color: #FFF;
-                background: #333;
-            }
+        .content {
+            position: relative;
+            padding: 20px;
+        }
+
+        .footer {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            position: fixed;
+            bottom: 0;
+            color: #FFF;
+            background: #333;
+        }
 
         .sidebar_link {
             text-decoration: none;
             width: 50px;
         }
 
-        .sidebar_div {
-            position: relative;
-            background: #AAA;
-            width: 50px;
-            height: 50px;
-            text-align: start;
-            white-space: nowrap;
-            line-height: 50px;
-            margin: 4px;
-            padding: 7px;
-            cursor: pointer;
+
+        .main_menu_container {
+            display: block;
+            text-align: left;
         }
 
-        .sidebar_text {
-            color: #FFF;
-            margin-left: 7px;
-            font-family: Ubuntu Mono;
-            font-weight: 700;
-            font-size: 40px;
-            text-align: center;
-            line-height: 50px;
-            display: none;
+        .menu_item_icon {
+            position: absolute;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+            -moz-filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+            -webkit-filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
         }
+
+        .menu_item_text {
+            font-family: 'Dosis', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            transform: scale( 1.2, 1 );
+            letter-spacing: 0.05em;
+            color: white;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+            -moz-filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+            -webkit-filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+        }
+
+        .main_menu_item {
+            box-sizing: border-box;
+            display: inline-block;
+            margin: 8px;
+            width: 248px;
+            height: 120px;
+            position: relative;
+            perspective: 200px;
+        }
+
+            .main_menu_item .inner_main_menu_item {
+                width: 100%;
+                height: 100%;
+                transform-origin: top;
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+            }
+
+        .inner_main_menu_item .menu_item_icon {
+            width: 56px;
+            height: 56px;
+            margin-left: 96px;
+            margin-top: 22px;
+        }
+
+        .inner_main_menu_item .menu_item_text {
+            width: 100%;
+            position: absolute;
+            margin-top: 90px;
+            text-align: center;
+        }
+
+        .inner_main_menu_item#site_contents {
+            background-color: rgb(44, 79, 191);
+        }
+
+        .inner_main_menu_item#extra {
+            background-color: rgb(44, 79, 191);
+        }
+
+
+        .child_menu {
+            position: absolute;
+            top: 100%;
+        }
+
+            .child_menu a {
+                text-decoration: none;
+                display: none;
+            }
+
+            .child_menu .child_menu_item {
+                position: relative;
+                background: #AAA;
+                width: 248px;
+                height: 60px;
+                text-align: start;
+                white-space: nowrap;
+                line-height: 60px;
+                cursor: pointer;
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+                margin-top: 2px;
+            }
+
+                .child_menu .child_menu_item .menu_item_text {
+                    font-size: 18px;
+                    text-align: center;
+                    width: 178px;
+                    margin-left: 60px;
+                    height: 60px;
+                    position: fixed;
+                }
+
+                .child_menu .child_menu_item .menu_item_icon {
+                    text-align: center;
+                    margin: 10px;
+                    width: 40px;
+                    height: 40px;
+                }
 
         .copyright {
             position: relative;
-            font-weight: 400;
-            font-family: Ubuntu Mono;
+            font-family: 'Dosis', sans-serif;
             text-align: center;
         }
     </style>
 
 </head>
 <body>
-    <div id="side_bar">
+    <div class="header">
+        <span class="header_text">oboenikui.com</span>
+    </div>
+    <div class="content">
 
-        <div class="sidebar_div" id="twitter" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
-            <img src="./img/twitter.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">twitter</span>
-        </div>
+        <div class="main_menu_container">
+            <div class="main_menu_item">
 
-        <div class="sidebar_div" id="github" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
-            <img src="./img/github.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">github</span>
-        </div>
+                <div class="child_menu">
+                    <a href="/space_doitsu_no_tori">
+                        <div class="child_menu_item">
+                            <img src="/img/doitsu_no_tori.png" class="menu_item_icon" />
+                            <span class="menu_item_text">Space Doitsu no Tori</span>
+                        </div>
+                    </a>
 
-        <div class="sidebar_div" id="hatena" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
-            <img src="./img/hatenablog.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">hatena</span>
-        </div>
-        
-        <div class="sidebar_div" id="apps" onmouseover="mouseOverAction(this)" onmouseout="mouseOutAction(this)" onclick="mouseClickAction(this.id)">
-            <img src="./img/apps.png" width="50" height="50" align="left" /><span id="text" class="sidebar_text">apps</span>
+                    <a href="/senga">
+                        <div class="child_menu_item">
+                            <img src="/img/senga.png" class="menu_item_icon" />
+                            <span class="menu_item_text">Senga</span>
+                        </div>
+                    </a>
+
+                    <a href="/gen_icon">
+                        <div class="child_menu_item">
+                            <img src="/img/android.png" class="menu_item_icon" />
+                            <span class="menu_item_text">Icon Generator</span>
+                        </div>
+                    </a>
+                    <a href="/tani">
+                        <div class="child_menu_item">
+                            <img src="/img/tani.png" class="menu_item_icon" />
+                            <span class="menu_item_text">Tani Fallin' Down</span>
+                        </div>
+                    </a>
+
+                    <a href="/asyley">
+                        <div class="child_menu_item">
+                            <img src="/img/eur.png" class="menu_item_icon" />
+                            <span class="menu_item_text">Asyley_ ⇔ EUR</span>
+                        </div>
+                    </a>
+                </div>
+                <div id="site_contents" class="inner_main_menu_item">
+                    <img class="menu_item_icon" src="/img/site_content.png" />
+                    <span class="menu_item_text">Site Contents</span>
+
+                </div>
+            </div>
+            <div class="main_menu_item">
+                <div class="child_menu">
+                    <a href="https://twitter.com/oboenikui" target="blank">
+                        <div class="child_menu_item">
+                            <img src="./img/twitter.png" class="menu_item_icon" />
+                            <span class="menu_item_text">twitter</span>
+                        </div>
+                    </a>
+                    <a href="https://github.com/oboenikui" target="blank">
+                        <div class="child_menu_item">
+                            <img src="./img/github.png" class="menu_item_icon" />
+                            <span id="text" class="menu_item_text">github</span>
+                        </div>
+                    </a>
+
+                    <a href="http://oboenikui.hatenablog.com" target="blank">
+                        <div class="child_menu_item">
+                            <img src="./img/hatenablog.png" class="menu_item_icon" />
+                            <span id="text" class="menu_item_text">hatena</span>
+                        </div>
+                    </a>
+                    <a href="https://play.google.com/store/apps/developer?id=oboenikui" target="blank">
+                        <div class="child_menu_item">
+                            <img src="./img/apps.png" class="menu_item_icon" />
+                            <span id="text" class="menu_item_text">apps</span>
+                        </div>
+                    </a>
+                </div>
+                <div id="extra" class="inner_main_menu_item">
+                    <img class="menu_item_icon" src="/img/extra.png" />
+                    <span class="menu_item_text">Extra</span>
+
+                </div>
+            </div>
         </div>
     </div>
-    <div id="footer">
+    <div class="footer">
         <div class="copyright">
-            Copyright &copy; 2014 oboenikui All Right Reserved.
+            Copyright &copy; 2015 oboenikui All Right Reserved.
         </div>
-    </div>
-    <div id="header">
-        oboenikui.com
     </div>
     <script>
-        window.onload = function () {
-        }
-        preload();
-        window.onresize = function () {
-            onResized();
-        }
     </script>
 </body>
 
