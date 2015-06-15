@@ -9,7 +9,23 @@ window.onload = function () {
 }
 
 var mouseAction = function (e) {
+    if (isInChildMenuItem(e.toElement) && !isInSameChildMenu(e.fromElement, e.toElement)) {
+        var childMenuItem = getChildMenuItem(e.toElement)
+        if (!childMenuItem.getAttribute("color")) {
+            childMenuItem.setAttribute("color", 0);
+        }
+        childMenuItem.setAttribute("type", "over");
+        childMenuItemColorAnimation(childMenuItem);
 
+    }
+    if (isInChildMenuItem(e.fromElement) && !isInSameChildMenu(e.fromElement, e.toElement)) {
+        var childMenuItem = getChildMenuItem(e.fromElement);
+        if (!childMenuItem.getAttribute("color")) {
+            childMenuItem.setAttribute("color", 0);
+        }
+        childMenuItem.setAttribute("type", "out");
+        childMenuItemColorAnimation(childMenuItem);
+    }
     if (isInSameMenu(e.fromElement, e.toElement)) {
         return;
     }
@@ -35,13 +51,41 @@ var mouseAction = function (e) {
 }
 
 var isInSameMenu = function (element0, element1) {
-    return getMenuItem(element0) == getMenuItem(element1);
+    var tmp;
+    return (tmp = getMenuItem(element0)) == getMenuItem(element1) && tmp;
+}
+
+var isInSameChildMenu = function (element0, element1) {
+    var tmp = getChildMenuItem(element0);
+    return tmp && tmp == getChildMenuItem(element1);
+}
+
+var isInChildMenuItem = function (element) {
+    if (element && element.className == "child_menu_item") {
+        return true;
+    } else if (element) {
+        return isInChildMenuItem(element.parentElement);
+    } else {
+        return false;
+    }
+
 }
 
 var getMenuItem = function(element){
     var tmp = element;
     while (tmp) {
         if (tmp.className == "main_menu_item") {
+            return tmp;
+        }
+        tmp = tmp.parentElement;
+    }
+    return null;
+}
+
+var getChildMenuItem = function (element) {
+    var tmp = element;
+    while (tmp) {
+        if (tmp.className == "child_menu_item") {
             return tmp;
         }
         tmp = tmp.parentElement;
@@ -129,6 +173,35 @@ var childMenuAnimation = function (element) {
                 element.style.top = "90px";
             }
 
+            break;
+    }
+}
+
+var childMenuItemColorAnimation = function(element){
+    var n = element.getAttribute("color");
+    var type = element.getAttribute("type");
+    switch (type) {
+        case "over":
+            element.style.background = "#" + (0x111111 * (0xA - ++n)).toString(16);
+            if (n < 8) {
+                setTimeout(function () { childMenuItemColorAnimation(element) }, 30);
+                element.setAttribute("color", n);
+            } else {
+                element.removeAttribute("color");
+                element.removeAttribute("type");
+            }
+            break;
+        case "out":
+            --n;
+            if (n <= 0) {
+                element.style.background = null;
+                element.removeAttribute("color");
+                element.removeAttribute("type");
+            } else {
+                element.style.background = "#" + (0x111111 * (0xA - n)).toString(16);
+                setTimeout(function () { childMenuItemColorAnimation(element) }, 30);
+                element.setAttribute("color", n);
+            }
             break;
     }
 }

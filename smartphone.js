@@ -3,7 +3,7 @@ function preload() {
         navigator.userAgent.indexOf('iPad') > 0 ||
         navigator.userAgent.indexOf('iPod') > 0 ||
         navigator.userAgent.indexOf('Android') > 0 ||
-        navigatot.userAgent.indexOf('Windows Phone') > 0) {
+        navigator.userAgent.indexOf('Windows Phone') > 0) {
         loadSmartphone();
     }
 }
