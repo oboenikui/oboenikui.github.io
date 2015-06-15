@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Android resource icon generator</title>
+    <script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+    <form onsubmit="start();return false">
+        <input type="file" id="file" accept="image/png,image/jpeg,image/gif" />
+        <div class="icon_type">
+            <select id="icon_type">
+                <option value="actionbar">Action Bar and Tab Icon</option>
+                <option value="custom">Custom Size</option>
+            </select>
+            <input type="number" class="input_size_x" id="size_x" placeholder="size x of xxxhdpi" max="1024" min="4" value="128" disabled="disabled" />
+            <input type="number" class="input_size_x" id="size_y" placeholder="size y of xxxhdpi" max="1024" min="4" value="128" disabled="disabled" />
+        </div>
+        <div class="icon_color">
+            <select id="color_type">
+                <option value="holo_dark">Holo Dark</option>
+                <option value="holo_light">Holo Light</option>
+                <option value="custom">Custom</option>
+            </select>
+            <input type="color" id="color" value="#FFFFFF" disabled="disabled"/>
+            <input type="number" id="alpha" placeholder="Alpha(0-255)" max="255" min="0" value="220" disabled="disabled" />
+        </div>
+        <div class="file_name">
+            <input type="text" id="file_name" placeholder="File name" />.png
+        </div>
+        <input type="button" id="output_png" onclick="outputZip()" value="Download ZIP" />
+    </form>
+    <div class="image_table">
+        <div class="table_child xxxhdpi">
+            <canvas id="xxxhdpi"></canvas>
+        </div>
+        <div class="table_child xxhdpi">
+            <canvas id="xxhdpi"></canvas>
+        </div>
+        <div class="table_child xhdpi">
+            <canvas id="xhdpi"></canvas>
+        </div>
+        <div class="table_child hdpi">
+            <canvas id="hdpi"></canvas>
+        </div>
+        <div class="table_child mdpi">
+            <canvas id="mdpi"></canvas>
+        </div>
+    </div>
+
+</body>
+</html>
