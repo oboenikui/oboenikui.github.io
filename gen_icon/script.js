@@ -46,27 +46,28 @@ var setupCanvas = function (imageData) {
     var size_y = document.getElementById("size_y").valueAsNumber;
     var color = document.getElementById("color").value;
     var alpha = document.getElementById("alpha").valueAsNumber;
-    var size_x_e = size_x, size_y_e = size_y, size_x_o = size_x * 23 / 32, size_y_o = size_y * 23 / 32;
+    var size_x_e = size_x, size_y_e = size_y, size_x_o = size_x * 3 / 4, size_y_o = size_y * 3 / 4;
     var types = ["xxxhdpi", "xxhdpi", "xhdpi", "hdpi", "mdpi"];
+    var padding = 16;
     for (var i = 0; i < types.length; i++) {
         var canvas = document.getElementById(types[i]);
         if (i % 2 == 0) {
-            resize(image, canvas, size_x_e, size_y_e, color, alpha);
+            resize(image, canvas, size_x_e, size_y_e, padding * 2 / (i + 2), color, alpha);
             size_x_e /= 2;
             size_y_e /= 2;
         } else {
-            resize(image, canvas, size_x_o, size_y_o, color, alpha);
+            resize(image, canvas, size_x_o, size_y_o, padding * 3 / 2 / (i + 1), color, alpha);
             size_x_o /= 2;
             size_y_o /= 2;
         }
     }
 };
 
-var resize = function (image, canvas, size_x, size_y, color, alpha) {
+var resize = function (image, canvas, size_x, size_y, padding, color, alpha) {
     canvas.width = size_x;
     canvas.height = size_y;
     var context = canvas.getContext("2d");
-    context.drawImage(image, 0, 0, size_x, size_y);
+    context.drawImage(image, padding, padding, size_x - 2 * padding, size_y - 2 * padding);
     if (!color) {
         color = "#000000";
     }
