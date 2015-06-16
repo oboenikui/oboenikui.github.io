@@ -3,7 +3,8 @@ function preload() {
         navigator.userAgent.indexOf('iPad') > 0 ||
         navigator.userAgent.indexOf('iPod') > 0 ||
         navigator.userAgent.indexOf('Android') > 0 ||
-        navigator.userAgent.indexOf('Windows Phone') > 0) {
+        navigator.userAgent.indexOf('Windows Phone') > 0 ||
+        navigator.userAgent.indexOf('KFAPWI') > 0 ) {
         loadSmartphone();
     }
 }
@@ -12,7 +13,12 @@ function loadSmartphone() {
     var head = document.getElementsByTagName("head")[0];
     var meta = document.createElement("meta");
     meta.setAttribute("name", "viewport");
-    meta.setAttribute("content", "width=573px");
+    if (window.innerWidth > window.innerHeight) {
+        var width = parseInt(530 / window.innerHeight * window.innerWidth);
+        meta.setAttribute("content", "width="+width+"px");
+    } else {
+        meta.setAttribute("content", "width=580px");
+    }
     head.appendChild(meta);
     var cr = document.getElementsByClassName("copyright")[0];
     cr.textContent = cr.textContent.substring(cr.textContent.indexOf("Copyright") + 10, cr.textContent.indexOf("All Right") - 1);
@@ -32,7 +38,7 @@ function loadSmartphone() {
             meta.setAttribute("content", "width="+width+"px");
         } else {
 
-            meta.setAttribute("content", "width=573px");
+            meta.setAttribute("content", "width=580px");
         }
     }, false);
 }
