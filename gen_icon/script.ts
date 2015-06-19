@@ -17,10 +17,23 @@ window.onload = () => {
     document.getElementById("file").addEventListener("change", start, false);
     document.getElementById("color_type").addEventListener("change", changeColorType, false);
     document.getElementById("icon_type").addEventListener("change", changeIconType, false);
-    document.getElementById("color").addEventListener("change", start, false);
-    document.getElementById("alpha").addEventListener("change", start, false);
-    document.getElementById("size_x").addEventListener("change", start, false);
-    document.getElementById("size_y").addEventListener("change", start, false);
+    document.getElementById("color").addEventListener("change", startColor, false);
+    document.getElementById("alpha").addEventListener("change", startColor, false);
+    document.getElementById("size_x").addEventListener("change", startSize, false);
+    document.getElementById("size_y").addEventListener("change", startSize, false);
+    start();
+}
+
+var startColor = () => {
+
+    (<HTMLSelectElement>document.getElementById("color_type")).value = "custom";
+    start();
+}
+
+var startSize = () => {
+
+    (<HTMLSelectElement>document.getElementById("icon_type")).value = "custom";
+    start();
 }
 
 var start = () => {
@@ -35,40 +48,42 @@ var loadImage = (callback: Function) => {
         fileReader.addEventListener("load", function (e: ProgressEvent) {
             callback((<FileReader>e.target).result);
         }, false);
-        fileReader.readAsDataURL(file);
+    fileReader.readAsDataURL(file);
+    } else {
+        callback("./sample.png");
     }
 };
 
 var setupCanvas = (imageData: string) => {
     var image: HTMLImageElement = new Image();
     image.src = imageData;
-    var size_x: number = (<HTMLInputElement>document.getElementById("size_x")).valueAsNumber;
-    var size_y: number = (<HTMLInputElement>document.getElementById("size_y")).valueAsNumber;
-    var color: string = (<HTMLInputElement>document.getElementById("color")).value;
-    var alpha: number = (<HTMLInputElement>document.getElementById("alpha")).valueAsNumber;
-    var size_x_e = size_x, size_y_e = size_y, size_x_o = size_x * 3 / 4, size_y_o = size_y * 3 / 4;
-    var types = ["xxxhdpi", "xxhdpi", "xhdpi", "hdpi", "mdpi"];
-    var padding = 16;
-    for (var i = 0; i < types.length; i++) {
-        var canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById(types[i]);
-        if (i % 2 == 0) {
-            resize(image, canvas, size_x_e, size_y_e, padding * 2 / (i + 2), color, alpha);
-            size_x_e /= 2;
-            size_y_e /= 2;
-        } else {
-            resize(image, canvas, size_x_o, size_y_o, padding * 3 / 2 / (i + 1), color, alpha);
-            size_x_o /= 2;
-            size_y_o /= 2;
+    image.addEventListener("load", function(){
+        var size_x: number = (<HTMLInputElement>document.getElementById("size_x")).valueAsNumber;
+        var size_y: number = (<HTMLInputElement>document.getElementById("size_y")).valueAsNumber;
+        var color: string = (<HTMLInputElement>document.getElementById("color")).value;
+        var alpha: number = (<HTMLInputElement>document.getElementById("alpha")).valueAsNumber;
+        var size_x_e = size_x, size_y_e = size_y, size_x_o = size_x * 3 / 4, size_y_o = size_y * 3 / 4;
+        var types = ["xxxhdpi", "xxhdpi", "xhdpi", "hdpi", "mdpi"];
+        var padding = 16;
+        for (var i = 0; i < types.length; i++) {
+            var canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById(types[i]);
+            if (i % 2 == 0) {
+                resize(image, canvas, size_x_e, size_y_e, padding * 2 / (i + 2), color, alpha);
+                size_x_e /= 2;
+                size_y_e /= 2;
+            } else {
+                    resize(image, canvas, size_x_o, size_y_o, padding * 3 / 2 / (i + 1), color, alpha);
+                    size_x_o /= 2;
+                    size_y_o /= 2;
+            }
         }
-    }
+    }, false);
 }
-
-
 
 var resize = (image: HTMLImageElement, canvas: HTMLCanvasElement, size_x: number, size_y: number, padding: number, color?: string, alpha?: number) => {
     canvas.width = size_x;
     canvas.height = size_y;
-    var context: CanvasRenderingContext2D = canvas.getContext("2d");
+    var context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext("2d");
     context.drawImage(image, padding, padding, size_x - 2 * padding, size_y - 2 * padding);
     if (!color) {
         color = "#000000";
@@ -80,6 +95,8 @@ var resize = (image: HTMLImageElement, canvas: HTMLCanvasElement, size_x: number
     monochromeFilter(imageData, color, alpha);
     context.putImageData(imageData, 0, 0);
 }
+
+
 
 var monochromeFilter = function (imageData: ImageData, color: string, alpha: number) {
     var rgb = getRGB(color);
@@ -115,20 +132,14 @@ var changeColorType = (e: Event) => {
     var alpha: HTMLInputElement = <HTMLInputElement>document.getElementById("alpha");
     switch (value) {
         case "holo_dark":
-            color.disabled = true;
-            alpha.disabled = true;
             color.value = "#FFFFFF"
             alpha.value = "220";
             break;
         case "holo_light":
-            color.disabled = true;
-            alpha.disabled = true;
             color.value = "#343434"
             alpha.value = "181";
             break;
         case "custom":
-            color.disabled = false;
-            alpha.disabled = false;
             break;
     }
     start();
@@ -140,14 +151,10 @@ var changeIconType = (e: Event) => {
     var y: HTMLInputElement = <HTMLInputElement>document.getElementById("size_y");
     switch (value) {
         case "actionbar":
-            x.disabled = true;
-            y.disabled = true;
-            x.value = "128"
-            y.value = "128";
-            break;
+        x.value = "128"
+        y.value = "128";
+        break;
         case "custom":
-            x.disabled = false;
-            y.disabled = false;
 
     }
     start();
@@ -229,11 +236,7 @@ var stoInt16Array = (data: string): Int16Array => {
 var itob = (num: number, digit: number): string => {
     var str = "";
     for (var i = 0; i < digit; i++) {
-        var tmp = ((num >> (i * 8)) & 0xFF).toString(16);
-        if (tmp.length == 1) {
-            tmp = "0" + tmp;
-        }
-        str += unescape("%" + tmp);
+        str += String.fromCharCode((num >> (i * 8)) & 0xFF);
     }
     return str;
 }

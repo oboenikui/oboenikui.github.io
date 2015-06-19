@@ -5,6 +5,30 @@
     <meta charset="utf-8" />
     <title>Android resource icon generator</title>
     <script type="text/javascript" src="script.js"></script>
+    <style type="text/css">
+        .table_child {
+            display: inline-block;
+        }
+
+        .canvas_container {
+            padding: 0px;
+            background-color: #ffffff;
+            -webkit-background-size: 30px 30px;
+            -moz-background-size: 30px 30px;
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            background-image: -webkit-linear-gradient(45deg,  #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%),
+                              -webkit-linear-gradient(-135deg, #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%);
+            background-image: -moz-linear-gradient(45deg,  #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%),
+                              -moz-linear-gradient(-135deg, #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%);
+            background-image: -ms-linear-gradient(45deg,  #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%),
+                              -ms-linear-gradient(-135deg, #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%);
+            background-image: -o-linear-gradient(45deg,  #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%),
+                              -o-linear-gradient(-135deg, #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%);
+            background-image: linear-gradient(45deg,  #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%),
+                              linear-gradient(-135deg, #cccccc 25%, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%, #cccccc 75%);
+        }
+    </style>
 </head>
 <body>
     <form onsubmit="start();return false">
@@ -14,17 +38,17 @@
                 <option value="actionbar">Action Bar and Tab Icon</option>
                 <option value="custom">Custom Size</option>
             </select>
-            <input type="number" class="input_size_x" id="size_x" placeholder="size x of xxxhdpi" max="1024" min="4" value="128" disabled="disabled" />
-            <input type="number" class="input_size_x" id="size_y" placeholder="size y of xxxhdpi" max="1024" min="4" value="128" disabled="disabled" />
+            <input type="number" class="input_size_x" id="size_x" placeholder="size x of xxxhdpi" max="1024" min="4" value="128"/>
+            <input type="number" class="input_size_x" id="size_y" placeholder="size y of xxxhdpi" max="1024" min="4" value="128"/>
         </div>
         <div class="icon_color">
             <select id="color_type">
-                <option value="holo_dark">Holo Dark</option>
                 <option value="holo_light">Holo Light</option>
+                <option value="holo_dark">Holo Dark</option>
                 <option value="custom">Custom</option>
             </select>
-            <input type="color" id="color" value="#FFFFFF" disabled="disabled"/>
-            <input type="number" id="alpha" placeholder="Alpha(0-255)" max="255" min="0" value="220" disabled="disabled" />
+            <input type="color" id="color" value="#343434"/>
+            <input type="number" id="alpha" placeholder="Alpha(0-255)" max="255" min="0" value="181"/>
         </div>
         <div class="file_name">
             <input type="text" id="file_name" placeholder="File name" />.png
@@ -33,19 +57,34 @@
     </form>
     <div class="image_table">
         <div class="table_child xxxhdpi">
-            <canvas id="xxxhdpi"></canvas>
+            <span>xxxhdpi</span>
+            <div class="canvas_container">
+                <canvas id="xxxhdpi"></canvas>
+            </div>
         </div>
         <div class="table_child xxhdpi">
-            <canvas id="xxhdpi"></canvas>
+            <span>xxhdpi</span>
+            <div class="canvas_container">
+                <canvas id="xxhdpi"></canvas>
+            </div>
         </div>
         <div class="table_child xhdpi">
-            <canvas id="xhdpi"></canvas>
+            <span>xhdpi</span>
+            <div class="canvas_container">
+                <canvas id="xhdpi"></canvas>
+            </div>
         </div>
         <div class="table_child hdpi">
-            <canvas id="hdpi"></canvas>
+            <span>hdpi</span>
+            <div class="canvas_container">
+                <canvas id="hdpi"></canvas>
+            </div>
         </div>
         <div class="table_child mdpi">
-            <canvas id="mdpi"></canvas>
+            <span>mdpi</span>
+            <div class="canvas_container">
+                <canvas id="mdpi"></canvas>
+            </div>
         </div>
     </div>
 

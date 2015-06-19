@@ -16,15 +16,26 @@
                 document.getElementById("result").innerText = text;
 
             }, false);
+            document.getElementById("currency_from").addEventListener("change", function(e){document.getElementById("currency_to").value = e.target.value});
+            document.getElementById("currency_to").addEventListener("change", function(e){document.getElementById("currency_from").value = e.target.value});
         }
     </script>
     <title>為替レート</title>
 </head>
 <body>
     <form onsubmit="return false">
-        <input type="number" name="price"><br/>
-        <input type="radio" name="select" value="asyley2eur" checked> Asyley_をEURに<br/>
-        <input type="radio" name="select" value="eur2asyley"> EURをAsyley_に<br/>
+        <h1><p class="rate floatL">為替レート計算</p></h1>
+        <input type="number" name="price" min="0">
+        <select id="currency_from" name="select">
+            <option value="asyley2eur">日本　アシュリー</option>
+            <option value="eur2asyley">欧州　ユーロ</option>
+        </select>
+        <span>&nbsp;を&nbsp;</span>
+        <select id="currency_to">
+            <option value="asyley2eur">欧州　ユーロ</option>
+            <option value="eur2asyley">日本　アシュリー</option>
+        </select>
+        <span>&nbsp;に&nbsp;</span>
         <input type="submit" value="変換">
         <div id="result"></div>
     </form>
