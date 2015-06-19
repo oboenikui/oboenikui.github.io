@@ -87,6 +87,8 @@ var resize = function (image, canvas, size_x, size_y, padding, color, alpha) {
     monochromeFilter(imageData, color, alpha);
     context.putImageData(imageData, 0, 0);
 };
+var bicubic = function () {
+};
 var monochromeFilter = function (imageData, color, alpha) {
     var rgb = getRGB(color);
     if (!rgb) {
@@ -144,7 +146,14 @@ var changeIconType = function (e) {
 };
 var outputZip = function () {
     var data = createZip();
-    open("data:application/zip;base64," + data);
+    var a = document.createElement("a");
+    a.href = "data:application/zip;base64," + data;
+    var file_name = document.getElementById("file_name").value + ".zip";
+    if (file_name.length == 4) {
+        file_name = "ic_menu_icon.zip";
+    }
+    a.setAttribute("download", file_name);
+    a.click();
 };
 var createZip = function () {
     var date = new Date();
@@ -185,8 +194,6 @@ var createZip = function () {
         var file = atob(document.getElementById(types[i]).toDataURL().split(",")[1]);
         var dataArray = stoInt16Array(file);
         prev_crc = CRC32.getCRC32(dataArray, 0xFFFFFFFF);
-        console.log(prev_crc);
-        console.log(CRC32.getCRC32(dataArray, 0xFFFFFFFF));
         head += itob(prev_crc, 4);
         middle += itob(prev_crc, 4);
         var size = itob(dataArray.length, 4);

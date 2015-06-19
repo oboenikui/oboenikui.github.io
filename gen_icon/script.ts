@@ -96,7 +96,9 @@ var resize = (image: HTMLImageElement, canvas: HTMLCanvasElement, size_x: number
     context.putImageData(imageData, 0, 0);
 }
 
+var bicubic = () => {
 
+}
 
 var monochromeFilter = function (imageData: ImageData, color: string, alpha: number) {
     var rgb = getRGB(color);
@@ -162,7 +164,14 @@ var changeIconType = (e: Event) => {
 
 var outputZip = () => {
     var data = createZip();
-    open("data:application/zip;base64,"+data)
+    var a = <HTMLAnchorElement>document.createElement("a");
+    a.href = "data:application/zip;base64,"+data;
+    var file_name = (<HTMLInputElement>document.getElementById("file_name")).value + ".zip";
+    if (file_name.length == 4) {
+        file_name = "ic_menu_icon.zip";
+    }
+    a.setAttribute("download", file_name);
+    a.click();
 }
 
 var createZip = (): string => {
@@ -205,8 +214,6 @@ var createZip = (): string => {
         var file = atob((<HTMLCanvasElement>document.getElementById(types[i])).toDataURL().split(",")[1]);
         var dataArray = stoInt16Array(file);
         prev_crc = CRC32.getCRC32(dataArray, 0xFFFFFFFF);
-        console.log(prev_crc);
-        console.log(CRC32.getCRC32(dataArray, 0xFFFFFFFF));
         head += itob(prev_crc, 4);
         middle += itob(prev_crc, 4);
         var size = itob(dataArray.length, 4);
