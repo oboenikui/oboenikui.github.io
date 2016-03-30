@@ -8,11 +8,11 @@
         var current_count = 0;
         var isShowing = true;
         function actionbar_animation(count, func) {
-            if (count == current_count) {
+            if (count === current_count) {
                 func();
             } else {
                 var tmp = current_count;
-                setTimeout(function () { actionbar_animation(tmp, hide_actionbar) }, 3000);
+                setTimeout(actionbar_animation.bind(undefined, tmp, hide_actionbar), 3000);
             }
         }
 
@@ -24,7 +24,7 @@
             var element = document.getElementById("actionbar");
             if (element.style.top != "0px") {
                 element.style.top = getHeight(element.style.top) + 2 + "px";
-                setTimeout(show_animation, 30);
+                requestAnimationFrame(show_animation);
             } else {
                 var tmp = current_count;
                 setTimeout(function () { actionbar_animation(tmp, hide_actionbar) }, 3000);
@@ -34,8 +34,8 @@
         var hide_animation = function () {
             var element = document.getElementById("actionbar");
             if (element.style.top != "-24px") {
+                requestAnimationFrame(hide_animation);
                 element.style.top = getHeight(element.style.top) - 2 + "px";
-                setTimeout(hide_animation, 30);
             } else {
                 element.style.display = "none";
                 isShowing = false;
@@ -97,10 +97,10 @@
             }
         };
         var unit_array = ["s", "m", "kg", "A", "K", "mol", "cd", "sr", "Hz", "N", "Pa", "J", "W", "C", "V", "F", "Ω", "S", "Wb", "T", "H", "℃", "lm", "lx", "Bq", "Gy", "Sv", "kat", "￥", "＄"];
-        var refresh_rate = 30;
         var g = 9.8;
         var font_name;
         var probability = 0.5;
+        var previous = new Date().getTime();
         var get_query = function () {
             var result = {};
             if (1 < window.location.search.length) {
@@ -131,18 +131,22 @@
             document.getElementsByTagName("body")
         }
 
-        var move_unit = function (pos) {
-            pos.y = pos.y + pos.v;
-            pos.v = pos.v + g / refresh_rate;
+        var move_unit = function (pos, interval) {
+            pos.v = pos.v + g * interval / 1000;
+            pos.y = pos.y + pos.v * interval / 17;
         }
 
         var move_all = function (positions) {
+            var current = new Date().getTime();
+            var count = 0;
             for (var i = 0; i < positions.length; i++) {
-                move_unit(positions[i]);
-                if (positions[i].y - window.innerWidth / 10 > window.innerHeight) {
-                    positions.splice(i, 1);
+                move_unit(positions[i], current - previous);
+                if (positions[i].y - positions[i].size * 2 > window.innerHeight && i === count) {
+                    count++;
                 }
             }
+            previous = current;
+            return count;
         }
         var max_size = window.innerWidth / 10;
         var add_unit = function (positions) {
@@ -152,7 +156,7 @@
                     unit: randnum,
                     x: Math.floor(Math.random() * (window.innerWidth + max_size) - max_size),
                     y: 0,
-                    v: Math.floor(Math.random() * window.innerHeight / refresh_rate),
+                    v: Math.floor(Math.random() * window.innerHeight / 60),
                     size: Math.floor(Math.random() * max_size) + 1
                 });
             }
@@ -183,9 +187,6 @@
                 font_name = ctx.font.substring(ctx.font.indexOf("px") + 3, ctx.font.length);
             }
             var positions = [];
-            if (queries["refresh_rate"] != undefined) {
-                refresh_rate = queries["refresh_rate"];
-            }
             if (queries["probability"] != undefined) {
                 probability = queries["probability"] > 1 ? 1 : queries["probability"];
             }
@@ -193,7 +194,6 @@
                 document.title = queries["title"];
             }
             var timer;
-            var delay = 1000 / refresh_rate;
             var count = current_count;
             var wrapper = document.getElementById("can");
             wrapper.allowFullscreen = true;
@@ -202,11 +202,13 @@
             }
             setTimeout(function () { actionbar_animation(count, hide_actionbar) }, 3000);
             var loop = function () {
-                move_all(positions);
+                requestAnimationFrame(loop);
+                var removeCount = move_all(positions);
+                if(removeCount > 0) {
+                    positions = positions.slice(removeCount, positions.length);
+                }
                 add_unit(positions);
                 draw_all(ctx, positions);
-                clearTimeout(timer);
-                timer = setTimeout(loop, delay);
             }
             loop();
         }
