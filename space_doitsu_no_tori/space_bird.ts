@@ -1,24 +1,152 @@
-﻿
-var canvas: HTMLCanvasElement;
+﻿var canvas: HTMLCanvasElement;
+var draft_canvas: HTMLCanvasElement;
 var space: Space;
-window.onload = () => {
+var currentbirdindex = -1;
+window.addEventListener("load", () => {
     canvas = <HTMLCanvasElement>document.getElementById("space");
+    draft_canvas = <HTMLCanvasElement>document.createElement("canvas");
     if (!canvas || !canvas.getContext) return false;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    draft_canvas.width = window.innerWidth;
+    draft_canvas.height = window.innerHeight;
+    if (navigator.pointerEnabled) {
+        canvas.addEventListener("pointerdown", function (e) {
+            currentbirdindex = getPointingBird(e);
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerDownEvent(e.pageX, e.pageY);
+            }
+        }, false);
+        canvas.addEventListener("pointermove", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerMoveEvent(e.pageX, e.pageY);
+            }
+        }, false);
+        canvas.addEventListener("pointerup", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent();
+                currentbirdindex = -1;
+            }
+        }, false);
+        canvas.addEventListener("pointercancel", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent();
+                currentbirdindex = -1;
+            }
+        }, false);
+    } else if (navigator.msPointerEnabled) {
+        canvas.addEventListener("MSPointerDown", function (e) {
+            currentbirdindex = getPointingBird(e);
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerDownEvent(e.pageX, e.pageY);
+            }
+        }, false);
+        canvas.addEventListener("MSPointerMove", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerMoveEvent(e.pageX, e.pageY);
+            }
+        }, false);
+        canvas.addEventListener("MSPointerUp", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent();
+                currentbirdindex = -1;
+            }
+        }, false);
+        canvas.addEventListener("MSPointerCancel", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent();
+                currentbirdindex = -1;
+            }
+        }, false);
+    } else {
+        canvas.addEventListener("mousedown", function (e) {
+            currentbirdindex = getPointingBird(e);
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerDownEvent(e.pageX, e.pageY);
+            }
+        }, false);
+        canvas.addEventListener("mousemove", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerMoveEvent(e.pageX, e.pageY);
+            }
+        }, false);
+        canvas.addEventListener("mouseup", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent();
+                currentbirdindex = -1;
+            }
+        }, false);
+        canvas.addEventListener("mousecancel", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent();
+                currentbirdindex = -1;
+            }
+        }, false);
+        canvas.addEventListener("touchstart", function (e) {
+            currentbirdindex = getPointingBirdTouch(e);
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerDownEvent(e.targetTouches[0].pageX, e.targetTouches[0].pageY);
+            }
+        }, false);
+        canvas.addEventListener("touchmove", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerMoveEvent(e.targetTouches[0].pageX, e.targetTouches[0].pageY);
+            }
+        }, false);
+        canvas.addEventListener("touchend", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent();
+                currentbirdindex = -1;
+            }
+        }, false);
+        canvas.addEventListener("touchcancel", function (e) {
+            if (currentbirdindex != -1) {
+                space.birds[currentbirdindex].onPointerUpEvent();
+                currentbirdindex = -1;
+            }
+        }, false);
+    }
     space = new Space(canvas.getContext("2d"), window.innerWidth, window.innerHeight);
-    space.startAnimation();
-}
+});
 
-window.onresize = () => {
+window.addEventListener("resize", () => {
     if (!canvas || !canvas.getContext) return false;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    draft_canvas.width = window.innerWidth;
+    draft_canvas.height = window.innerHeight;
     if (space) {
         space.onSizeChanged(window.innerWidth, window.innerHeight);
     }
+});
+
+function getPointingBird(e) {
+    var draft_context = draft_canvas.getContext("2d");
+    draft_context.clearRect(0, 0, canvas.width, canvas.height);
+    var i;
+    for (i = space.birds.length - 1; i >= 0; i--) {
+        space.birds[i].draw(draft_context);
+        var image = draft_context.getImageData(e.clientX, e.clientY, 1, 1);
+        if (image.data[3] > 0x7F) {
+            return i;
+        }
+    }
+    return -1;
 }
 
+function getPointingBirdTouch(e) {
+    var draft_context = draft_canvas.getContext("2d");
+    draft_context.clearRect(0, 0, canvas.width, canvas.height);
+    var i;
+    for (i = space.birds.length - 1; i >= 0; i--) {
+        space.birds[i].draw(draft_context);
+        var image = draft_context.getImageData(e.targetTouches[0].pageX, e.targetTouches[0].pageY, 1, 1);
+        if (image.data[3] > 0x7F) {
+            return i;
+        }
+    }
+    return -1;
+}
 
 class Space {
 
@@ -78,16 +206,21 @@ class Space {
     private boardWidth: number;
     private boardHeight: number;
     private lastPrint: number;
-    private birds: Array<Bird>;
+    public birds: Array<Bird>;
     private background: HTMLImageElement;
     private context: CanvasRenderingContext2D;
+    private grabbing_bird;
 
     public constructor(context: CanvasRenderingContext2D, boardWidth: number, boardHeight: number) {
+        this.grabbing_bird = null;
         this.context = context;
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
         this.background = new Image();
         this.background.src = Space.BACKGROUND;
+        this.background.addEventListener("load", () => {
+            this.startAnimation();
+        })
     }
 
     private addView(bird: Bird) {
@@ -105,13 +238,11 @@ class Space {
         this.removeAllViews();
 
         for (var i = 0; i < Space.NUM_BEANS; i++) {
-            var nv: Bird = new Bird(this.context, this.boardWidth, this.boardHeight);
+            var nv: Bird = new Bird(this.boardWidth, this.boardHeight);
             this.addView(nv);
             nv.z = i / Space.NUM_BEANS;
             nv.z *= nv.z;
-            nv.reset();
-            nv.x = (Space.randfrange(0, this.boardWidth));
-            nv.y = (Space.randfrange(0, this.boardHeight));
+            nv.reset(Space.randfrange(0, this.boardWidth), Space.randfrange(0, this.boardHeight));
         }
     }
 
@@ -129,53 +260,48 @@ class Space {
 
     public startAnimation(): void {
         this.stopAnimation();
-        this.mAnim = window.setInterval(
-            () => {
-                this.context.setTransform(1, 0, 0, 1, 0, 0);
-                this.context.clearRect(0, 0, this.boardWidth, this.boardHeight);
-                var widthScale = this.boardWidth / this.background.width;
-                var heightScale = this.boardHeight / this.background.height;
-                var sx, sy, sw, sh;
-                if (widthScale < heightScale) {
-                    sw = this.boardWidth / heightScale;
-                    sh = this.background.height;
-                    sx = (this.background.width - sw) / 2;
-                    sy = 0;
-                } else {
-                    sw = this.background.width;
-                    sh = this.boardHeight / widthScale;
-                    sx = 0;
-                    sy = (this.background.height - sh) / 2;
+        this.reset();
+        this.mAnim = window.setInterval(() => {
+            this.context.setTransform(1, 0, 0, 1, 0, 0);
+            var widthScale = this.boardWidth / this.background.width;
+            var heightScale = this.boardHeight / this.background.height;
+            var sx, sy, sw, sh;
+            if (widthScale < heightScale) {
+                sw = this.boardWidth / heightScale;
+                sh = this.background.height;
+                sx = (this.background.width - sw) / 2;
+                sy = 0;
+            } else {
+                sw = this.background.width;
+                sh = this.boardHeight / widthScale;
+                sx = 0;
+                sy = (this.background.height - sh) / 2;
+            }
+            this.context.drawImage(this.background, sx, sy, sw, sh, 0, 0, this.boardWidth, this.boardHeight);
+            for (var i = 0; i < this.birds.length; i++) {
+
+                var nv: Bird = this.birds[i];
+                nv.update(Space.TIMEOUT / 1000);
+
+                for (var j = i + 1; j < this.birds.length; j++) {
+                    var nv2: Bird = this.birds[j];
+                    var overlap: number = nv.overlap(nv2);
                 }
-                this.context.drawImage(this.background, sx, sy, sw, sh, 0, 0, this.boardWidth, this.boardHeight);
-                for (var i = 0; i < this.birds.length; i++) {
 
-                    var nv: Bird = this.birds[i];
-                    nv.update(Space.TIMEOUT / 1000);
+                nv.draw(this.context);
 
-                    for (var j = i + 1; j < this.birds.length; j++) {
-                        var nv2: Bird = this.birds[j];
-                        var overlap: number = nv.overlap(nv2);
-                    }
-
-                    nv.draw();
-
-                    if (nv.x < - Space.MAX_RADIUS
-                        || nv.x > this.boardWidth + Space.MAX_RADIUS
-                        || nv.y < - Space.MAX_RADIUS
-                        || nv.y > this.boardHeight + Space.MAX_RADIUS) {
-                        nv.reset();
-                    }
-
+                if (nv.x < - Space.MAX_RADIUS
+                    || nv.x > this.boardWidth + Space.MAX_RADIUS
+                    || nv.y < - Space.MAX_RADIUS
+                    || nv.y > this.boardHeight + Space.MAX_RADIUS) {
+                    nv.reset();
                 }
 
             }
-            , Space.TIMEOUT);
-        this.reset();
+
+        }, Space.TIMEOUT);
     }
 }
-
-
 
 class Bird {
     public static VMAX = 1000.0;
@@ -210,49 +336,52 @@ class Bird {
     private boardWidth: number;
 
     private image: HTMLImageElement;
-    private context: CanvasRenderingContext2D;
 
-    constructor(context: CanvasRenderingContext2D, boardWidth: number, boardHeight: number) {
+    constructor(boardWidth: number, boardHeight: number) {
         this.boardHeight = boardHeight;
         this.boardWidth = boardWidth;
-        this.context = context;
     }
 
     public toString(): String {
         return "<bean (" + Math.round(this.x * 10) / 10 + ", " + Math.round(this.y * 10) / 10 + ") (" + this.w + " x " + this.h + ")>";
     }
 
-    private pickBird(): void {
+    private pickBird(x?: number, y?: number): void {
         var birdURL: string = Space.pickString(Space.BIRDS);
         this.image = new Image();
         this.image.src = birdURL;
+        this.image.addEventListener("load", () => {
+            this.scale = Space.lerp(Space.MIN_SCALE, Space.MAX_SCALE, this.z);
 
+            this.h = this.image.height;
+            this.w = this.image.width;
+
+            this.r = 0.3 * Math.max(this.h, this.w) * this.scale;
+
+            this.a = (Space.randfrange(0, 360));
+            this.va = Space.randfrange(-30, 30);
+
+            this.vx = Space.randfrange(-40, 40) * this.z;
+            this.vy = Space.randfrange(-40, 40) * this.z;
+            var boardh = this.boardHeight;
+            var boardw = this.boardWidth;
+            if (!x) {
+                if (Space.flip()) {
+                    this.x = (this.vx < 0 ? boardw + 2 * this.r : -this.r * 4);
+                    this.y = (Space.randfrange(0, boardh - 3 * this.r) * 0.5 + ((this.vy < 0) ? boardh * 0.5 : 0));
+                } else {
+                    this.y = (this.vy < 0 ? boardh + 2 * this.r : -this.r * 4);
+                    this.x = (Space.randfrange(0, boardw - 3 * this.r) * 0.5 + ((this.vx < 0) ? boardw * 0.5 : 0));
+                }
+            } else {
+                this.x = x;
+                this.y = y;
+            }
+        });
     }
 
-    public reset() {
-        this.pickBird();
-        console.log(this);
-        this.scale = Space.lerp(Space.MIN_SCALE, Space.MAX_SCALE, this.z);
-
-        this.h = this.image.height;
-        this.w = this.image.width;
-
-        this.r = 0.3 * Math.max(this.h, this.w) * this.scale;
-
-        this.a = (Space.randfrange(0, 360));
-        this.va = Space.randfrange(-30, 30);
-
-        this.vx = Space.randfrange(-40, 40) * this.z;
-        this.vy = Space.randfrange(-40, 40) * this.z;
-        var boardh: number = this.boardHeight;
-        var boardw: number = this.boardWidth;
-        if (Space.flip()) {
-            this.x = (this.vx < 0 ? boardw + 2 * this.r : -this.r * 4);
-            this.y = (Space.randfrange(0, boardh - 3 * this.r) * 0.5 + ((this.vy < 0) ? boardh * 0.5 : 0));
-        } else {
-            this.y = (this.vy < 0 ? boardh + 2 * this.r : -this.r * 4);
-            this.x = (Space.randfrange(0, boardw - 3 * this.r) * 0.5 + ((this.vx < 0) ? boardw * 0.5 : 0));
-        }
+    public reset(x?: number, y?: number) {
+        this.pickBird(x, y);
     }
 
     public update(dt: number) {
@@ -274,37 +403,35 @@ class Bird {
         return Space.mag(dx, dy) - this.r - other.r;
     }
 
-    public onTouchEvent(action: string, e: PointerEvent) {
-        switch (action) {
-            case "pointerdown":
-                this.grabbed = true;
-                this.grabx_offset = e.clientX - this.x;
-                this.graby_offset = e.clientY - this.y;
-                this.va = 0;
-            case "pointermove":
-                this.grabx = e.clientX - this.grabx_offset;
-                this.graby = e.clientY - this.graby_offset;
-                break;
-            case "pointercancel":
-            case "pointerup":
-                this.grabbed = false;
-                var a: number = Space.randsign() * Space.clamp(Space.mag(this.vx, this.vy) * 0.33, 0, 1080);
-                this.va = Space.randfrange(a * 0.5, a);
-                break;
-        }
-        return true;
-    }
+    public onPointerDownEvent(x: number, y: number) {
+        this.grabbed = true;
+        this.grabx_offset = x - this.x;
+        this.graby_offset = y - this.y;
+        this.grabx = x - this.grabx_offset;
+        this.graby = y - this.graby_offset;
+        this.va = 0;
+    };
 
+    public onPointerMoveEvent(x: number, y: number) {
+        this.grabx = x - this.grabx_offset;
+        this.graby = y - this.graby_offset;
+    };
 
-    public draw() {
-        this.context.save();
+    public onPointerUpEvent() {
+        this.grabbed = false;
+        var a = Space.randsign() * Space.clamp(Space.mag(this.vx, this.vy) * 0.33, 0, 1080);
+        this.va = Space.randfrange(a * 0.5, a);
+    };
+
+    public draw(context: CanvasRenderingContext2D) {
+        context.save();
         // Move registration point to the center of the canvas
-        this.context.translate(this.x + this.w * this.scale / 2, this.y + this.h * this.scale / 2);
+        context.translate(this.x + this.w * this.scale / 2, this.y + this.h * this.scale / 2);
         // Rotate 1 degree
-        this.context.rotate(Math.PI * this.a / 180);
+        context.rotate(Math.PI * this.a / 180);
         // Move registration point back to the top left corner of canvas
-        this.context.translate(-(this.x + this.w * this.scale / 2), -(this.y + this.h * this.scale / 2));
-        this.context.drawImage(this.image, this.x, this.y, this.w * this.scale, this.h * this.scale);
-        this.context.restore();
+        context.translate(-(this.x + this.w * this.scale / 2), -(this.y + this.h * this.scale / 2));
+        context.drawImage(this.image, this.x, this.y, this.w * this.scale, this.h * this.scale);
+        context.restore();
     }
 }
