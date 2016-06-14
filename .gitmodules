@@ -1,6 +1,3 @@
 [submodule ".slack-moji"]
 	path = .slack-moji
 	url = https://github.com/oboenikui/slack-moji.git
-[submodule "SpaceDoitsuNoTori"]
-	path = SpaceDoitsuNoTori
-	url = https://github.com/oboenikui/SpaceDoitsuNoTori
