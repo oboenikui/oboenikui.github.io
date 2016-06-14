@@ -1,1 +1,1 @@
-exclude: [slack_moji/*.json]
+exclude: ["slack_moji/src", "slack_moji/*.json", "slack_moji/js/test.js", "slack_moji/test.html", "README.md"]
