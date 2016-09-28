@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>たるしょ〜</title>
+</head>
+
+<body>
+    なまえ&nbsp;<input type="text" id="name" autofocus/></br>
+    <form method="POST" target="_blank" action="https://shindanmaker.com/456799">
+        <input type="hidden" name="u" />
+        <input type="submit" value="1回" id="tarusho1" />
+    </form>
+    <form method="POST" target="_blank" action="https://shindanmaker.com/661574">
+        <input type="hidden" name="u" />
+        <input type="submit" value="10連" id="tarusho10" />
+    </form>
+    <input type="submit" value="両方" id="tarushoAll" /><br/>
+    両方やりたい場合はポップアップ許可してね
+    <script type="application/javascript">
+        (function(){
+            var u = document.getElementsByName("u");
+            var name = document.getElementById("name");
+            name.addEventListener("input", function(ev) {
+                setName(ev.target.value);
+                localStorage["tarusho::name"] = ev.target.value;
+            });
+            name.addEventListener("keyup", function(event) {
+                event.preventDefault();
+                if (event.keyCode == 13) {
+                    execAll();
+                }
+            });
+            setName(localStorage["tarusho::name"])
+            name.value = localStorage["tarusho::name"] || ""
+            document.getElementById("tarushoAll").addEventListener("click", execAll);
+
+            function setName(name) {
+                for(var i=0; i<u.length; i++)
+                    u[i].value = name;
+            }
+            function execAll() {
+                document.getElementById("tarusho1").click();
+                setTimeout(function(){
+                    document.getElementById("tarusho10").click();
+                }, 1);
+            }
+        })()
+    </script>
+</body>
+
+</html>
